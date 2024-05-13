@@ -66,12 +66,14 @@ async def avatar(ctx: interactions.CommandContext, user: str):
     else:
         print(f"API Request Failed with code {response.status_code}")
         await ctx.send("Discord API Request Failed.\nThere could be multiple reasons for this:\n- You pinged a role instead of a user\n- You didn't ping the user but typed their name instead\n- You typed nonsense into the input\n- The Discord API Could be down (unlikely)",ephemeral=True)
+
+# Info Command
 @bot.command(
     name="info",
     description="Give information about the bot",
     scope=1221655728029302865,
 )
 async def info(ctx: interactions.CommandContext):
-    await ctx.send("**## Aribot 9000: By [arithefirst](https://arithefirst.com)**Written in python using interactions.py\n*Note: I would not reccomend using this library, as there is no built in Discord API, I had to write functions to request from the API myself.*")
+    await ctx.send("**## [Aribot 9000](https://github.com/AriTheFirst/aribot-9000): By [arithefirst](https://arithefirst.com)**Written in python using interactions.py and a custom method for interfacing with the Discord API")
 print("Starting Bot....")
 bot.start()
