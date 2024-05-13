@@ -12,6 +12,10 @@ Written in python using [interactions.py](https://github.com/interactions-py) an
 **Arguments:** User (Ping or Snowflake)<br>
 **Description:** Returns a specified user's avatar.
 
+### /Banner
+**Arguments:** User (Ping or Snowflake)<br>
+**Description:** Returnes a specified user's Nitro banner. If the user does not have nitro it returns their banner hex code instead.
+
 ### /Info
 **Arguments:** N/A<br>
 **Description:** Gives basic info about the bot
