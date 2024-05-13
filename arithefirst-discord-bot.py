@@ -7,15 +7,18 @@ import json
 from dotenv import load_dotenv
 
 # Grab bot token from enviroment
-load_dotenv()
+load_dotenv
 TOKEN = os.getenv("BOT_TOKEN")
 bot = interactions.Client(token=TOKEN)
+
+# Define Command Scopes
+command_scopes = [752667089155915846, 1221655728029302865, 1172683672856567808]
 
 # API Request Command
 @bot.command(
     name="api",
     description="Get data on a user from Discord's API",
-    scope=[752667089155915846, 1221655728029302865, 1172683672856567808],
+    scope=command_scopes,
     options = [
         interactions.Option(
             name="user",
@@ -43,7 +46,7 @@ async def avatar(ctx: interactions.CommandContext, user: str):
 @bot.command(
     name="avatar",
     description="Grab a user's avatar",
-    scope=[752667089155915846, 1221655728029302865, 1172683672856567808],
+    scope=command_scopes,
     options=[
         interactions.Option(
             name="user",
@@ -74,7 +77,7 @@ async def avatar(ctx: interactions.CommandContext, user: str):
 @bot.command(
     name="banner",
     description="Grab a user's banner, and if they don't have nitro give it's hex code",
-    scope=[752667089155915846, 1221655728029302865, 1172683672856567808],
+    scope=command_scopes,
     options=[
         interactions.Option(
             name="user",
@@ -112,7 +115,7 @@ async def avatar(ctx: interactions.CommandContext, user: str):
 @bot.command(
     name="info",
     description="Give information about the bot",
-    scope=[752667089155915846, 1221655728029302865, 1172683672856567808],
+    scope=command_scopes,
 )
 async def info(ctx: interactions.CommandContext):
     await ctx.send("**## [Aribot 9000](https://github.com/AriTheFirst/aribot-9000): By [arithefirst](https://arithefirst.com)**Written in python using interactions.py and a custom method for interfacing with the Discord API")
@@ -121,7 +124,7 @@ async def info(ctx: interactions.CommandContext):
 @bot.command(
     name="ping",
     description="Sends Pong",
-    scope=[752667089155915846, 1221655728029302865, 1172683672856567808],
+    scope=command_scopes,
 )
 async def ping(ctx: interactions.CommandContext):
     await ctx.send("Pong!")
