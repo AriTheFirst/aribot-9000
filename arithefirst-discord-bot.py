@@ -67,6 +67,9 @@ async def avatar(ctx: interactions.CommandContext, user: str):
         answer = response.json()
         avatar_id = answer['avatar']
         username = answer['global_name']
+        print(f"{avatar_id}")
+        if username == None:
+            username = answer['username']
         avatar_url = f"https://cdn.discordapp.com/avatars/{userchecked}/{avatar_id}.png?size=2048"
         print(f"Got Avatar URL for User {userchecked}: {avatar_url}")
         await ctx.send(f"[Here]({avatar_url}) is {username}'s avatar!")
@@ -82,13 +85,13 @@ async def avatar(ctx: interactions.CommandContext, user: str):
     options=[
         interactions.Option(
             name="user",
-            description="The User to get the avatar of",
+            description="The User to get the banner of",
             type=interactions.OptionType.STRING,
             required=True,
         ),
     ],
 )
-async def avatar(ctx: interactions.CommandContext, user: str):
+async def banner(ctx: interactions.CommandContext, user: str):
     userchecked = re.sub("[^0-9]", "", f"{user}")
     url = f"https://discord.com/api/v10/users/{userchecked}"
     headers = {"Authorization": f"Bot {TOKEN}"}
@@ -100,6 +103,8 @@ async def avatar(ctx: interactions.CommandContext, user: str):
         banner_id = answer['banner']
         banner_hex = answer['banner_color']
         print(f"{banner_id}")
+        if username == None:
+            username = answer['username']
         if banner_id == None:
             print("User does not have Nitro, Grabbing Hex Code....")
             print(f"Hex Code {banner_hex} found")
