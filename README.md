@@ -6,7 +6,7 @@ Written in python using [interactions.py](https://github.com/interactions-py) an
 
 ### /API
 **Arguments:** User (Ping or Snowflake)<br>
-**Description:** Uses the discord api to lookup data about specified user. This data includes the UID, Username, Avatar ID, Public Flags, Flags, Banner ID, Profile Accent Color, Global Name, Avatar Decoration Data, SKU ID, Banner Color, and Clan Data. 
+**Description:** Uses the discord api to lookup data about specified user. This data includes the UID, Username, Avatar ID, Public Flags, Flags, Banner ID, Profile Accent Color, Global Name, Avatar Decoration Data, Banner Color, and Clan Data. 
 
 ### /Avatar
 **Arguments:** User (Ping or Snowflake)<br>
@@ -15,6 +15,10 @@ Written in python using [interactions.py](https://github.com/interactions-py) an
 ### /Banner
 **Arguments:** User (Ping or Snowflake)<br>
 **Description:** Returnes a specified user's Nitro banner. If the user does not have nitro it returns their banner hex code instead.
+
+### /Ping
+**Arguments:** N/A<br>
+**Description:** Sends a "Pong!"
 
 ### /Info
 **Arguments:** N/A<br>
