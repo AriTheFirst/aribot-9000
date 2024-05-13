@@ -1,4 +1,4 @@
-**# Aribot 9000: By [arithefirst](https://arithefirst.com)**
+# **Aribot 9000: By [arithefirst](https://arithefirst.com)**
 Written in python using interactions.py
 *Note: I would not reccomend using this library, as there is no built in Discord API, I had to write functions to request from the API myself.*
 
