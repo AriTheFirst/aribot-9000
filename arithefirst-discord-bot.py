@@ -4,10 +4,11 @@ import requests
 import interactions
 import os
 import json
+import random
 from dotenv import load_dotenv
 
 # Grab bot token from enviroment
-load_dotenv
+load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
 bot = interactions.Client(token=TOKEN)
 
@@ -120,7 +121,7 @@ async def avatar(ctx: interactions.CommandContext, user: str):
 async def info(ctx: interactions.CommandContext):
     await ctx.send("**## [Aribot 9000](https://github.com/AriTheFirst/aribot-9000): By [arithefirst](https://arithefirst.com)**Written in python using interactions.py and a custom method for interfacing with the Discord API")
 
-#Ping Commang
+# Ping Commang
 @bot.command(
     name="ping",
     description="Sends Pong",
@@ -128,5 +129,7 @@ async def info(ctx: interactions.CommandContext):
 )
 async def ping(ctx: interactions.CommandContext):
     await ctx.send("Pong!")
+
+#Launch The Bot
 print("Starting Bot....")
 bot.start()
