@@ -14,7 +14,7 @@ Written in python using [interactions.py](https://github.com/interactions-py) an
 
 ### /Banner
 **Arguments:** User (Ping or Snowflake)<br>
-**Description:** Returnes a specified user's Nitro banner. If the user does not have nitro it returns their banner hex code instead.
+**Description:** Show's a specified user's banner. If the user does not have nitro, their banner's hex code and a color preview will be displayed
 
 ### /Cat
 **Arguments:** N/A<br>

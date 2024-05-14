@@ -111,7 +111,8 @@ async def banner(ctx: interactions.CommandContext, user: str):
         if banner_id == None:
             print("User does not have Nitro, Grabbing Hex Code....")
             print(f"Hex Code {banner_hex} found")
-            await ctx.send(f"{username}'s banner Hex is {banner_hex}")
+            hex_no_pound = re.sub('[^A-Za-z0-9]', '', banner_hex)
+            await ctx.send(f"{username}'s banner Hex is [{banner_hex}](https://singlecolorimage.com/get/{hex_no_pound}/600x240)")
         else:
             banner_url = f"https://cdn.discordapp.com/banners/{userchecked}/{banner_id}.png?size=4096"
             print(f"Got Banner URL for User {userchecked}: {banner_url}")
