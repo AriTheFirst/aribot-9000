@@ -16,6 +16,10 @@ Written in python using [interactions.py](https://github.com/interactions-py) an
 **Arguments:** User (Ping or Snowflake)<br>
 **Description:** Returnes a specified user's Nitro banner. If the user does not have nitro it returns their banner hex code instead.
 
+### /Cat
+**Arguments:** N/A<br>
+**Description:** Sends an image of a cat
+
 ### /Ping
 **Arguments:** N/A<br>
 **Description:** Sends a "Pong!"
