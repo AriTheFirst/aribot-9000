@@ -137,6 +137,7 @@ async def info(ctx: interactions.CommandContext):
 async def ping(ctx: interactions.CommandContext):
     await ctx.send("Pong!")
 
+# Cat Command
 @bot.command(
     name="cat",
     description="Sends a random cat",
