@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 # Grab bot token from enviroment
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
+CAT_TOKEN = os.getenv("CAT_TOKEN")
 bot = interactions.Client(token=TOKEN)
 
 # Define Command Scopes
@@ -145,7 +146,7 @@ async def ping(ctx: interactions.CommandContext):
 )
 async def cat(ctx: interactions.CommandContext):
     url = "https://api.thecatapi.com/v1/images/search?limit=1&has_breeds=1"
-    headers = {"x-api-key": "live_vvo9rT9srnSq83icFIOwGxVHieVcfLLDX3dv7K04eAR4IfxvSn0nuyIGSVyZUthV"}
+    headers = {"x-api-key": CAT_TOKEN}
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         print("Request successful!")
@@ -157,6 +158,7 @@ async def cat(ctx: interactions.CommandContext):
     else:
         print(f"API Request Failed with code {response.status_code}")
         await ctx.send(f"Error Communicating with https://thecatapi.com/v1/images/search/ ({response.status_code})")
-#Launch The Bot
+
+# Launch The Bot
 print("Starting Bot....")
 bot.start()
