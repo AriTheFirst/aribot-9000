@@ -38,6 +38,8 @@ async def avatar(ctx: interactions.CommandContext, user: str):
         print(f"Request for user {userchecked} successful!")
         response_dict = response.json() 
         username = response_dict['global_name']
+        if username == None:
+            username = answer['username']
         json_formatted_str = json.dumps(response_dict, indent=4, sort_keys=True)
         await ctx.send(f"Here is the Discord API response for {username}:\n```json\n{json_formatted_str}```")
     else:
@@ -135,6 +137,25 @@ async def info(ctx: interactions.CommandContext):
 async def ping(ctx: interactions.CommandContext):
     await ctx.send("Pong!")
 
+@bot.command(
+    name="cat",
+    description="Sends a random cat",
+    scope=command_scopes,
+)
+async def cat(ctx: interactions.CommandContext):
+    url = "https://api.thecatapi.com/v1/images/search?limit=1&has_breeds=1"
+    headers = {"x-api-key": "live_vvo9rT9srnSq83icFIOwGxVHieVcfLLDX3dv7K04eAR4IfxvSn0nuyIGSVyZUthV"}
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        print("Request successful!")
+        answer = response.json()
+        cat_url = answer[0]['url']
+        breed_full = answer[0]['breeds']
+        breed = breed_full[0]['name']
+        await ctx.send(f"Check out this [{breed} cat!]({cat_url})")
+    else:
+        print(f"API Request Failed with code {response.status_code}")
+        await ctx.send(f"Error Communicating with https://thecatapi.com/v1/images/search/ ({response.status_code})")
 #Launch The Bot
 print("Starting Bot....")
 bot.start()
