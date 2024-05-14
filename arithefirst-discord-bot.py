@@ -133,7 +133,6 @@ async def info(ctx: interactions.CommandContext):
 @bot.command(
     name="ping",
     description="Sends Pong",
-    scope=command_scopes,
 )
 async def ping(ctx: interactions.CommandContext):
     await ctx.send("Pong!")
