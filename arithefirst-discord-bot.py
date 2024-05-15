@@ -4,7 +4,10 @@ import requests
 import interactions
 import os
 import json
+from datetime import datetime
+import pytz
 import random
+import yt_dlp
 from dotenv import load_dotenv
 
 # Grab bot token from enviroment
@@ -171,6 +174,42 @@ async def coinflip(ctx: interactions.CommandContext):
         await ctx.send("The Coin landed on Heads!")
     else:
         await ctx.send("The Coin landed on Tails!")
+
+# Timezones Command
+@bot.command(
+    name="time",
+    description="Send the time in the 4 Major US Timezones, Optionally specify an extra timezone",
+    scope=command_scopes,
+    options=[
+        interactions.Option(
+            name="timezone",
+            description="An optional extra timezone to get the time of (in Continent/City format)",
+            type=interactions.OptionType.STRING,
+            required=False,
+        ),
+    ],
+)
+async def time(ctx: interactions.CommandContext, timezone: str = None):  # Capture the timezone option here
+    if timezone is None:  # Check if timezone is None (default case)
+        time_zones = [
+            "America/New_York",
+            "America/Chicago",
+            "America/Denver",
+            "America/Los_Angeles"
+        ]
+        times = ""
+        for tz in time_zones:
+            tz_obj = pytz.timezone(tz)
+            current_time = datetime.now(tz_obj)
+            times += f"The time in {tz}: {current_time.strftime('%B %d, %Y %H:%M')}\n"
+        await ctx.send(times)
+    else:
+        try:
+            tz_obj = pytz.timezone(timezone)  # Attempt to create a timezone object with the provided timezone
+            current_time = datetime.now(tz_obj)
+            await ctx.send(f"The time in {timezone} is {current_time.strftime('%B %d, %Y %H:%M')}")
+        except pytz.exceptions.UnknownTimeZoneError:
+            await ctx.send("Invalid timezone provided.")
 
 # Launch The Bot
 print("Starting Bot....")
