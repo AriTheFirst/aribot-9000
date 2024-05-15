@@ -200,7 +200,7 @@ async def time(ctx: interactions.CommandContext, timezone: str = None):  # Captu
         for tz in time_zones:
             tz_obj = pytz.timezone(tz)
             current_time = datetime.now(tz_obj)
-            times += f"The time in **{tz}**: {current_time.strftime('%B %d, %Y %H:%M')}\n"
+            times += f"The time in **{tz}** is {current_time.strftime('%B %d, %Y %H:%M')}\n"
         await ctx.send(times)
     else:
         try:
