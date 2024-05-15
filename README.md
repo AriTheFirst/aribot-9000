@@ -20,6 +20,10 @@ Written in python using [interactions.py](https://github.com/interactions-py) an
 **Arguments:** N/A<br>
 **Description:** Sends an image of a cat
 
+### /Coinflip
+**Arguments:** N/A<br>
+**Description:** Flips a coin
+
 ### /Ping
 **Arguments:** N/A<br>
 **Description:** Sends a "Pong!"

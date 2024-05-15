@@ -159,6 +159,19 @@ async def cat(ctx: interactions.CommandContext):
         print(f"API Request Failed with code {response.status_code}")
         await ctx.send(f"Error Communicating with https://thecatapi.com/v1/images/search/ ({response.status_code})")
 
+# Coinflip Command
+@bot.command(
+    name="coinflip",
+    description="Flips a Coin",
+    scope=command_scopes,
+)
+async def coinflip(ctx: interactions.CommandContext):
+    result = random.randint(0, 1)
+    if result == 0:
+        await ctx.send("The Coin landed on Heads!")
+    else:
+        await ctx.send("The Coin landed on Tails!")
+
 # Launch The Bot
 print("Starting Bot....")
 bot.start()
