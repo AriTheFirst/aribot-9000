@@ -7,7 +7,6 @@ import json
 from datetime import datetime
 import pytz
 import random
-import yt_dlp
 from dotenv import load_dotenv
 
 # Grab bot token from enviroment
