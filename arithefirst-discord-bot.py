@@ -214,4 +214,11 @@ async def time(ctx: interactions.CommandContext, timezone: str = None):  # Captu
 
 # Launch The Bot
 print("Starting Bot....")
+print("""   ___       _ ___       __    ___  ___  ___  ___ 
+  / _ | ____(_) _ )___  / /_  / _ \\/ _ \\/ _ \\/ _ \\
+ / __ |/ __/ / _  / _ \\/ __/  \\_, / // / // / // /
+/_/ |_/_/ /_/____/\\___/\\__/  /___/\\___/\\___/\\___/ 
+-------------------------------------------------------
+https://arithefirst.com
+""")
 bot.start()
