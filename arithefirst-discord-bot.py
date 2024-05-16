@@ -6,6 +6,7 @@ import os
 import json
 from datetime import datetime
 import pytz
+import time
 import random
 from dotenv import load_dotenv
 
@@ -138,7 +139,9 @@ async def info(ctx: interactions.CommandContext):
     description="Sends Pong",
 )
 async def ping(ctx: interactions.CommandContext):
-    await ctx.send("Pong!")
+    start_time = time.time()
+    elapsed_time = time.time() - start_time
+    await ctx.send(f'Pong ({elapsed_time:.2f}s).')
 
 # Cat Command
 @bot.command(
