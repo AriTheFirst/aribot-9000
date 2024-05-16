@@ -169,6 +169,7 @@ async def cat(ctx: interactions.CommandContext):
     scope=command_scopes,
 )
 async def coinflip(ctx: interactions.CommandContext):
+    random.seed(f'{datetime.now(pytz.timezone("America/New_York")).strftime('%M%H%s')}')
     result = random.randint(0, 1)
     if result == 0:
         await ctx.send("The Coin landed on Heads!")
