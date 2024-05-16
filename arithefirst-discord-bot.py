@@ -139,9 +139,7 @@ async def info(ctx: interactions.CommandContext):
     description="Sends Pong",
 )
 async def ping(ctx: interactions.CommandContext):
-    start_time = time.time()
-    elapsed_time = time.time() - start_time
-    await ctx.send(f'Pong ({elapsed_time:.2f}s).')
+    await ctx.send('Pong.')
 
 # Cat Command
 @bot.command(
