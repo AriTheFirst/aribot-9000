@@ -21,7 +21,7 @@ bot = interactions.Client(token=TOKEN)
 command_scopes = [752667089155915846, 1221655728029302865, 1172683672856567808]
 
 # Set up some stuff for MongoDB
-dbclient = pymongo.MongoClient("mongodb://127.0.0.1:27017")
+dbclient = pymongo.MongoClient("mongodb://10.0.0.21:27017")
 database = dbclient["aribot-currency"]
 
 # API Request Command
