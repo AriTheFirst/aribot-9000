@@ -245,7 +245,10 @@ async def checkbal(ctx: interactions.CommandContext):
         await ctx.send("You couldn't be found in the database, so I take it this is your first time banking with us,\nHere's 100 Coins for free!")
     else:
         balance = answer.get("amt")
-        await ctx.send(f"Your balance is {balance} coins.")
+        def comma_seperate(number_str):
+            return "{:,}".format(int(number_str))
+        formatted_blance = comma_seperate(balance)
+        await ctx.send(f"Your balance is {formatted_blance} coins.")
         
 # Launch The Bot
 print("Starting Bot....")
