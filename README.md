@@ -20,6 +20,10 @@ Written in python using [interactions.py](https://github.com/interactions-py) an
 **Inputs:** N/A<br>
 **Description:** Sends an image of a cat
 
+### /Checkbal
+**Inputs:** N/A<br>
+**Description:** Sends you your current coin balance, gives you 100 coins if this is your first time using the command
+
 ### /Coinflip
 **Inputs:** N/A<br>
 **Description:** Flips a coin
@@ -27,6 +31,10 @@ Written in python using [interactions.py](https://github.com/interactions-py) an
 ### /Ping
 **Inputs:** N/A<br>
 **Description:** Sends a "Pong!"
+
+### /Identify
+**Inputs:** N/A<br>
+**Description:** Gives the user their UID and the server the command was run in's Guild ID
 
 ### /Info
 **Inputs:** N/A<br>
