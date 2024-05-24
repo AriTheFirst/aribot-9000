@@ -8,6 +8,7 @@ from datetime import datetime
 import pytz
 import time
 import random
+import pymongo
 from dotenv import load_dotenv
 
 # Grab bot token from enviroment
@@ -18,6 +19,10 @@ bot = interactions.Client(token=TOKEN)
 
 # Define Command Scopes
 command_scopes = [752667089155915846, 1221655728029302865, 1172683672856567808]
+
+# Set up some stuff for MongoDB
+dbclient = pymongo.MongoClient("mongodb://127.0.0.1:27017")
+database = dbclient["aribot-currency"]
 
 # API Request Command
 @bot.command(
@@ -212,6 +217,36 @@ async def time(ctx: interactions.CommandContext, timezone: str = None):  # Captu
         except pytz.exceptions.UnknownTimeZoneError:
             await ctx.send("Invalid timezone provided.")
 
+# Identify Command
+@bot.command(
+    name="identify",
+    description="Gives you your user id and this server's id",
+    scope=command_scopes,
+)
+async def identify(ctx: interactions.CommandContext):
+    await ctx.send(f'**User ID:** {ctx.user.id}\n**Guild ID:** {ctx.guild_id}')
+
+# Check Balance Command
+@bot.command(
+    name="checkbal",
+    description="Checks your balance",
+    scope=command_scopes,
+)
+async def checkbal(ctx: interactions.CommandContext):
+    query = {"name": str(ctx.user.id)}
+    usercol = database[f"server-{ctx.guild_id}"]
+    answer = usercol.find_one(query)
+    
+    if answer is None:
+        name = str(ctx.user.id)
+        uname = { "name": f"{name}", "amt": "100"}
+        inst = usercol.insert_one(uname)
+        print(f"Added Entry {inst.inserted_id}")
+        await ctx.send("You couldn't be found in the database, so I take it this is your first time banking with us,\nHere's 100 Coins for free!")
+    else:
+        balance = answer.get("amt")
+        await ctx.send(f"Your balance is {balance} coins.")
+        
 # Launch The Bot
 print("Starting Bot....")
 print("""   ___       _ ___       __    ___  ___  ___  ___ 
