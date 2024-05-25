@@ -25,8 +25,10 @@ Written in python using [interactions.py](https://github.com/interactions-py) an
 **Description:** Sends you your current coin balance, gives you 100 coins if this is your first time using the command
 
 ### /Coinflip
-**Inputs:** N/A<br>
-**Description:** Flips a coin
+**Inputs:**
+    **Bet:** A bet on wether the coin will land on heads or tails<br>
+    **Wager:** How much you want to wager on your bet<br>
+**Description:** Flips a coin and optionally lets you wager on it's outcome
 
 ### /Ping
 **Inputs:** N/A<br>
