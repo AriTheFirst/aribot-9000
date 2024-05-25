@@ -20,7 +20,7 @@ Written in python using [interactions.py](https://github.com/interactions-py) fo
 **Inputs:** N/A<br>
 **Description:** Sends an image of a cat
 
-### /Checkbal
+### /Checkbalance
 **Inputs:** N/A<br>
 **Description:** Sends you your current coin balance, gives you 100 coins if this is your first time using the command
 
