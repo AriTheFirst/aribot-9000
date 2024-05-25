@@ -1,5 +1,5 @@
 # **Aribot 9000: By [arithefirst](https://arithefirst.com)**
-Written in python using [interactions.py](https://github.com/interactions-py) and a custom method for interfacing with the Discord API<br>
+Written in python using [interactions.py](https://github.com/interactions-py) for Discord API and [MongoDB](https://www.mongodb.com/) for storing data of the currency system<br>
 
 
 ## Current Commands

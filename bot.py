@@ -136,7 +136,7 @@ async def banner(ctx: interactions.CommandContext, user: str):
     scope=command_scopes,
 )
 async def info(ctx: interactions.CommandContext):
-    await ctx.send("**## [Aribot 9000](https://github.com/AriTheFirst/aribot-9000): By [arithefirst](https://arithefirst.com)**Written in python using interactions.py and a custom method for interfacing with the Discord API")
+    await ctx.send("**## [Aribot 9000](https://github.com/AriTheFirst/aribot-9000): By [arithefirst](https://arithefirst.com)**Written in python using [interactions.py](https://github.com/interactions-py) for Discord API and [MongoDB](https://www.mongodb.com/) for storing data of the currency system")
 
 # Ping Commang
 @bot.command(
