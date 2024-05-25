@@ -188,8 +188,8 @@ async def cat(ctx: interactions.CommandContext):
     ]
 )
 async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int = None):
-    random.seed(f'{datetime.now(pytz.timezone("America/New_York")).strftime('%M%H%s')}')
-    result = random.randint(0, 1)
+    rng = random.SystemRandom()
+    result = rng.randint(0, 1)
     if bet is None or wager is None:
         if result == 0:
             await ctx.send("The Coin landed on Heads!")
