@@ -25,6 +25,10 @@ command_scopes = [752667089155915846, 1221655728029302865, 1172683672856567808]
 dbclient = pymongo.MongoClient("mongodb://10.0.0.21:27017")
 database = dbclient["aribot-currency"]
 
+# Add a somewhat important thingy
+def comma_seperate(number_str):
+    return "{:,}".format(int(number_str))
+
 # API Request Command
 @bot.command(
     name="api",
@@ -39,7 +43,7 @@ database = dbclient["aribot-currency"]
         ),
     ],
 )
-async def avatar(ctx: interactions.CommandContext, user: str):
+async def api(ctx: interactions.CommandContext, user: str):
     userchecked = re.sub("[^0-9]", "", f"{user}")
     url = f"https://discord.com/api/v10/users/{userchecked}"
     headers = {"Authorization": f"Bot {TOKEN}"}
@@ -214,7 +218,7 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
                     print(f"New balance for {ctx.user.id} is {newbalance}")
                     usercol.update_one(query, newvalues)
-                    await ctx.send(f"You win! **{wager}** coins have been added to your account!\nYour new balance is **{newbalance}**!")
+                    await ctx.send(f"You win! **{wager}** coins have been added to your account!\nYour new balance is **{comma_seperate(newbalance)}**!")
         # Win on Heads
         elif bet_lowercase == "heads" and result == 0:
             query = {"name": str(ctx.user.id)}
@@ -231,7 +235,7 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
                     print(f"New balance for {ctx.user.id} is {newbalance}")
                     usercol.update_one(query, newvalues)
-                    await ctx.send(f"You win! **{wager}** coins have been added to your account!\nYour new balance is **{newbalance}**!")
+                    await ctx.send(f"You win! **{wager}** coins have been added to your account!\nYour new balance is **{comma_seperate(newbalance)}**!")
         # Lose on Tails            
         elif bet_lowercase == "tails" and result == 0:
             query = {"name": str(ctx.user.id)}
@@ -248,7 +252,7 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
                     print(f"New balance for {ctx.user.id} is {newbalance}")
                     usercol.update_one(query, newvalues)
-                    await ctx.send(f"You Lose. **{wager}** coins have been removed from your account.\nYour new balance is **{newbalance}**!")
+                    await ctx.send(f"You Lose. **{wager}** coins have been removed from your account.\nYour new balance is **{comma_seperate(newbalance)}**!")
         # Lose on Heads
         elif bet_lowercase == "heads" and result == 1:
             query = {"name": str(ctx.user.id)}
@@ -265,7 +269,7 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
                     print(f"New balance for {ctx.user.id} is {newbalance}")
                     usercol.update_one(query, newvalues)
-                    await ctx.send(f"You Lose. **{wager}** coins have been removed from your account.\nYour new balance is **{newbalance}**!")
+                    await ctx.send(f"You Lose. **{wager}** coins have been removed from your account.\nYour new balance is **{comma_seperate(newbalance)}**!")
 
 # Timezones Command
 @bot.command(
@@ -331,8 +335,6 @@ async def checkbal(ctx: interactions.CommandContext):
         await ctx.send("You couldn't be found in the database, so I take it this is your first time banking with us,\nHere's 100 Coins for free!")
     else:
         balance = answer.get("amt")
-        def comma_seperate(number_str):
-            return "{:,}".format(int(number_str))
         formatted_blance = comma_seperate(balance)
         await ctx.send(f"Your balance is **{formatted_blance}** coins.")
 
