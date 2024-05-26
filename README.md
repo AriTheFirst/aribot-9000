@@ -26,9 +26,13 @@ Written in python using [interactions.py](https://github.com/interactions-py) fo
 
 ### /Coinflip
 **Inputs:**
-    **Bet:** A bet on wether the coin will land on heads or tails<br>
+    **Bet:** A bet on if the coin will land on heads or tails<br>
     **Wager:** How much you want to wager on your bet<br>
 **Description:** Flips a coin and optionally lets you wager on it's outcome
+
+### /Fish
+**Inputs:** N/A<br>
+**Description:** Lets you fish for things worth different amounts of coins
 
 ### /Ping
 **Inputs:** N/A<br>
