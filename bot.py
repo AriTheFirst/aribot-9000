@@ -325,8 +325,8 @@ async def checkbal(ctx: interactions.CommandContext):
     
     if answer is None:
         name = str(ctx.user.id)
-        uname = { "name": f"{name}", "amt": "100"}
-        inst = usercol.insert_one(uname)
+        default_values = { "name": f"{name}", "amt": "100", "lastfished": "0"}
+        inst = usercol.insert_one(default_values)
         print(f"Added Entry {inst.inserted_id}")
         await ctx.send("You couldn't be found in the database, so I take it this is your first time banking with us,\nHere's 100 Coins for free!")
     else:
@@ -387,136 +387,121 @@ async def fish(ctx: interactions.CommandContext):
         else:
             return "a " + f"**{delist}**"
 
-    rng = random.SystemRandom()
-    fished_fish = rng.choices(items, weights=normalized_probabilities, k=1)
-    if ' '.join(fished_fish) == "Old Boot":
+    value = rng.randint(1, 10)
+    query = {"name": str(ctx.user.id)}
+    usercol = database[f"server-{ctx.guild_id}"]
+    answer = usercol.find_one(query)
+    timesincefish = math.floor(time.time())-answer.get("lastfished")
+
+    if timesincefish < 300:
+        await ctx.send(f"/fish is still on cooldown for you! You have {timesincefish} seconds left.") 
+    else: 
         rng = random.SystemRandom()
-        value = rng.randint(1, 10)
-        query = {"name": str(ctx.user.id)}
-        usercol = database[f"server-{ctx.guild_id}"]
-        answer = usercol.find_one(query)
-        if answer == None:
-            await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
-        else:
-            balance = answer.get("amt")
-            newbalance = int(balance) + value
-            newvalues = { "$set": { "amt": f"{newbalance}" }}
-            usercol.update_one(query, newvalues)
-            await ctx.send(f'You caught {vowel_check(fished_fish)} worth {value} Coins! Your new balance is {newbalance}.')
-    elif ' '.join(fished_fish) == "Rock":
-        rng = random.SystemRandom()
-        value = rng.randint(1, 5)
-        query = {"name": str(ctx.user.id)}
-        usercol = database[f"server-{ctx.guild_id}"]
-        answer = usercol.find_one(query)
-        if answer == None:
-            await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
-        else:
-            balance = answer.get("amt")
-            newbalance = int(balance) + value
-            newvalues = { "$set": { "amt": f"{newbalance}" }}
-            usercol.update_one(query, newvalues)
-            await ctx.send(f'You caught {vowel_check(fished_fish)} worth {value} Coins! Your new balance is {newbalance}.')
-    elif ' '.join(fished_fish) == "Wallet":
-        rng = random.SystemRandom()
-        value = rng.randint(30, 65)
-        query = {"name": str(ctx.user.id)}
-        usercol = database[f"server-{ctx.guild_id}"]
-        answer = usercol.find_one(query)
-        if answer == None:
-            await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
-        else:
-            balance = answer.get("amt")
-            newbalance = int(balance) + value
-            newvalues = { "$set": { "amt": f"{newbalance}" }}
-            usercol.update_one(query, newvalues)
-            await ctx.send(f'You caught {vowel_check(fished_fish)} worth {value} Coins! Your new balance is {newbalance}.')
-    elif ' '.join(fished_fish) == "Oar Fish":
-        rng = random.SystemRandom()
-        value = rng.randint(45, 75)
-        query = {"name": str(ctx.user.id)}
-        usercol = database[f"server-{ctx.guild_id}"]
-        answer = usercol.find_one(query)
-        if answer == None:
-            await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
-        else:
-            balance = answer.get("amt")
-            newbalance = int(balance) + value
-            newvalues = { "$set": { "amt": f"{newbalance}" }}
-            usercol.update_one(query, newvalues)
-            await ctx.send(f'You caught {vowel_check(fished_fish)} worth {value} Coins! Your new balance is {newbalance}.')
-    elif ' '.join(fished_fish) == "Funny Stupid Fish":
-        rng = random.SystemRandom()
-        value = rng.randint(60, 85)
-        query = {"name": str(ctx.user.id)}
-        usercol = database[f"server-{ctx.guild_id}"]
-        answer = usercol.find_one(query)
-        if answer == None:
-            await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
-        else:
-            balance = answer.get("amt")
-            newbalance = int(balance) + value
-            newvalues = { "$set": { "amt": f"{newbalance}" }}
-            usercol.update_one(query, newvalues)
-            await ctx.send(f'You caught {vowel_check(fished_fish)} worth {value} Coins! Your new balance is {newbalance}.')
-    elif ' '.join(fished_fish) == "Salmon":
-        rng = random.SystemRandom()
-        value = rng.randint(55, 65)
-        query = {"name": str(ctx.user.id)}
-        usercol = database[f"server-{ctx.guild_id}"]
-        answer = usercol.find_one(query)
-        if answer == None:
-            await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
-        else:
-            balance = answer.get("amt")
-            newbalance = int(balance) + value
-            newvalues = { "$set": { "amt": f"{newbalance}" }}
-            usercol.update_one(query, newvalues)
-            await ctx.send(f'You caught {vowel_check(fished_fish)} worth {value} Coins! Your new balance is {newbalance}.')
-    elif ' '.join(fished_fish) == "Sea Bunny":
-        rng = random.SystemRandom()
-        value = rng.randint(100, 200)
-        query = {"name": str(ctx.user.id)}
-        usercol = database[f"server-{ctx.guild_id}"]
-        answer = usercol.find_one(query)
-        if answer == None:
-            await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
-        else:
-            balance = answer.get("amt")
-            newbalance = int(balance) + value
-            newvalues = { "$set": { "amt": f"{newbalance}" }}
-            usercol.update_one(query, newvalues)
-            await ctx.send(f'You caught {vowel_check(fished_fish)} worth {value} Coins! Your new balance is {newbalance}.')
-    elif ' '.join(fished_fish) == "Wedding Ring":
-        rng = random.SystemRandom()
-        value = rng.randint(150, 350)
-        query = {"name": str(ctx.user.id)}
-        usercol = database[f"server-{ctx.guild_id}"]
-        answer = usercol.find_one(query)
-        if answer == None:
-            await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
-        else:
-            balance = answer.get("amt")
-            newbalance = int(balance) + value
-            newvalues = { "$set": { "amt": f"{newbalance}" }}
-            usercol.update_one(query, newvalues)
-            await ctx.send(f'You caught {vowel_check(fished_fish)} worth {value} Coins! Your new balance is {newbalance}.')
-    elif ' '.join(fished_fish) == "Ancient Evil Goblin That Steals your Coins":
-        query = {"name": str(ctx.user.id)}
-        usercol = database[f"server-{ctx.guild_id}"]
-        answer = usercol.find_one(query)
-        if answer == None:
-            await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
-        else:
-            balance = answer.get("amt")
-            if int(balance) <= 1:
-                await ctx.send(f"You caught the {' '.join(fished_fish)}!\nHe tried to take half your coins, but you don't have any to take!")
-            else: 
-                newbalance = int(balance)/2
-                roundedbalance = math.floor(newbalance)
-                newvalues = { "$set": { "amt": f"{roundedbalance}" }}
+        fished_fish = rng.choices(items, weights=normalized_probabilities, k=1)
+        if ' '.join(fished_fish) == "Old Boot":
+            rng = random.SystemRandom()
+            value = rng.randint(1, 10)
+            if answer == None:
+                await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
+            else:
+                balance = answer.get("amt")
+                newbalance = int(balance) + value
+                newvalues = { "$set": { "amt": f"{newbalance}" }}
                 usercol.update_one(query, newvalues)
-                await ctx.send(f'You caught the **{' '.join(fished_fish)}**!\nHe took half your coins and now you have **{roundedbalance}**')
+                await ctx.send(f'You caught {vowel_check(fished_fish)} worth {value} Coins! Your new balance is {newbalance}.')
+        elif ' '.join(fished_fish) == "Rock":
+            rng = random.SystemRandom()
+            value = rng.randint(1, 5)
+            if answer == None:
+                await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
+            else:
+                balance = answer.get("amt")
+                newbalance = int(balance) + value
+                newvalues = { "$set": { "amt": f"{newbalance}" }}
+                usercol.update_one(query, newvalues)
+                await ctx.send(f'You caught {vowel_check(fished_fish)} worth {value} Coins! Your new balance is {newbalance}.')
+        elif ' '.join(fished_fish) == "Wallet":
+            rng = random.SystemRandom()
+            value = rng.randint(30, 65)
+            if answer == None:
+                await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
+            else:
+                balance = answer.get("amt")
+                newbalance = int(balance) + value
+                newvalues = { "$set": { "amt": f"{newbalance}" }}
+                usercol.update_one(query, newvalues)
+                await ctx.send(f'You caught {vowel_check(fished_fish)} worth {value} Coins! Your new balance is {newbalance}.')
+        elif ' '.join(fished_fish) == "Oar Fish":
+            rng = random.SystemRandom()
+            value = rng.randint(45, 75)
+            if answer == None:
+                await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
+            else:
+                balance = answer.get("amt")
+                newbalance = int(balance) + value
+                newvalues = { "$set": { "amt": f"{newbalance}" }}
+                usercol.update_one(query, newvalues)
+                await ctx.send(f'You caught {vowel_check(fished_fish)} worth {value} Coins! Your new balance is {newbalance}.')
+        elif ' '.join(fished_fish) == "Funny Stupid Fish":
+            rng = random.SystemRandom()
+            value = rng.randint(60, 85)
+            if answer == None:
+                await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
+            else:
+                balance = answer.get("amt")
+                newbalance = int(balance) + value
+                newvalues = { "$set": { "amt": f"{newbalance}" }}
+                usercol.update_one(query, newvalues)
+                await ctx.send(f'You caught {vowel_check(fished_fish)} worth {value} Coins! Your new balance is {newbalance}.')
+        elif ' '.join(fished_fish) == "Salmon":
+            rng = random.SystemRandom()
+            value = rng.randint(55, 65)
+            if answer == None:
+                await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
+            else:
+                balance = answer.get("amt")
+                newbalance = int(balance) + value
+                newvalues = { "$set": { "amt": f"{newbalance}" }}
+                usercol.update_one(query, newvalues)
+                await ctx.send(f'You caught {vowel_check(fished_fish)} worth {value} Coins! Your new balance is {newbalance}.')
+        elif ' '.join(fished_fish) == "Sea Bunny":
+            rng = random.SystemRandom()
+            value = rng.randint(100, 200)
+            if answer == None:
+                await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
+            else:
+                balance = answer.get("amt")
+                newbalance = int(balance) + value
+                newvalues = { "$set": { "amt": f"{newbalance}" }}
+                usercol.update_one(query, newvalues)
+                await ctx.send(f'You caught {vowel_check(fished_fish)} worth {value} Coins! Your new balance is {newbalance}.')
+        elif ' '.join(fished_fish) == "Wedding Ring":
+            rng = random.SystemRandom()
+            value = rng.randint(150, 350)
+            if answer == None:
+                await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
+            else:
+                balance = answer.get("amt")
+                newbalance = int(balance) + value
+                newvalues = { "$set": { "amt": f"{newbalance}" }}
+                usercol.update_one(query, newvalues)
+                await ctx.send(f'You caught {vowel_check(fished_fish)} worth {value} Coins! Your new balance is {newbalance}.')
+        elif ' '.join(fished_fish) == "Ancient Evil Goblin That Steals your Coins":
+            query = {"name": str(ctx.user.id)}
+            usercol = database[f"server-{ctx.guild_id}"]
+            answer = usercol.find_one(query)
+            if answer == None:
+                await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
+            else:
+                balance = answer.get("amt")
+                if int(balance) <= 1:
+                    await ctx.send(f"You caught the {' '.join(fished_fish)}!\nHe tried to take half your coins, but you don't have any to take!")
+                else: 
+                    newbalance = int(balance)/2
+                    roundedbalance = math.floor(newbalance)
+                    newvalues = { "$set": { "amt": f"{roundedbalance}" }}
+                    usercol.update_one(query, newvalues)
+                    await ctx.send(f'You caught the **{' '.join(fished_fish)}**!\nHe took half your coins and now you have **{roundedbalance}**')
         
 # Launch The Bot
 print("Starting Bot....")
