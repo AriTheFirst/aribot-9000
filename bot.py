@@ -403,7 +403,7 @@ async def fish(ctx: interactions.CommandContext):
         else:
             return '%d Minutes and %02d Seconds' % (minutes, seconds)
 
-    if roundtime - int(lastfished) < 300:
+    if roundtime - int(lastfished) < 150:
         await ctx.send(f"The /fish command is on cooldown!\nYou have **{convert_ms(300-(math.floor(time.time())-int(lastfished)))}** left.") 
     else: 
         fished_fish = rng.choices(items, weights=normalized_probabilities, k=1)
