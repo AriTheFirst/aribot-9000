@@ -352,7 +352,7 @@ async def checkbal(ctx: interactions.CommandContext):
             name="amt",
             description="New Balance for the user",
             type=interactions.OptionType.INTEGER,
-            required=False,
+            required=True,
         ),
     ]
 )
