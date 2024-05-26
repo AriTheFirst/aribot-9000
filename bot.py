@@ -218,7 +218,7 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
                     print(f"New balance for {ctx.user.id} is {newbalance}")
                     usercol.update_one(query, newvalues)
-                    await ctx.send(f"You win! **{comma_seperate(wager)}** coins have been added to your account!\nYour new balance is **{comma_seperate(newbalance)}**!")
+                    await ctx.send(f"You win! **{comma_seperate(abs(int(wager)))}** coins have been added to your account!\nYour new balance is **{comma_seperate(newbalance)}**!")
         # Win on Heads
         elif bet_lowercase == "heads" and result == 0:
             query = {"name": str(ctx.user.id)}
@@ -235,7 +235,7 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
                     print(f"New balance for {ctx.user.id} is {newbalance}")
                     usercol.update_one(query, newvalues)
-                    await ctx.send(f"You win! **{comma_seperate(wager)}** coins have been added to your account!\nYour new balance is **{comma_seperate(newbalance)}**!")
+                    await ctx.send(f"You win! **{comma_seperate(abs(int(wager)))}** coins have been added to your account!\nYour new balance is **{comma_seperate(newbalance)}**!")
         # Lose on Tails            
         elif bet_lowercase == "tails" and result == 0:
             query = {"name": str(ctx.user.id)}
@@ -252,7 +252,7 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
                     print(f"New balance for {ctx.user.id} is {newbalance}")
                     usercol.update_one(query, newvalues)
-                    await ctx.send(f"You Lose. **{comma_seperate(wager)}** coins have been removed from your account.\nYour new balance is **{comma_seperate(newbalance)}**!")
+                    await ctx.send(f"You Lose. **{comma_seperate(abs(int(wager)))}** coins have been removed from your account.\nYour new balance is **{comma_seperate(newbalance)}**!")
         # Lose on Heads
         elif bet_lowercase == "heads" and result == 1:
             query = {"name": str(ctx.user.id)}
@@ -269,7 +269,7 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
                     print(f"New balance for {ctx.user.id} is {newbalance}")
                     usercol.update_one(query, newvalues)
-                    await ctx.send(f"You Lose. **{comma_seperate(wager)}** coins have been removed from your account.\nYour new balance is **{comma_seperate(newbalance)}**!")
+                    await ctx.send(f"You Lose. **{comma_seperate(abs(int(wager)))}** coins have been removed from your account.\nYour new balance is **{comma_seperate(newbalance)}**!")
 
 # Timezones Command
 @bot.command(
