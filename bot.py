@@ -375,7 +375,7 @@ async def setbalance(ctx: interactions.CommandContext, user: str, amt: int):
     )
 async def fish(ctx: interactions.CommandContext):
     items = ['Old Boot', 'Rock', 'Wallet', 'Oar Fish', 'Funny Stupid Fish', 'Salmon', 'Sea Bunny', 'Wedding Ring', 'Ancient Evil Goblin That Steals your Coins']
-    probabilities = [20, 20, 15, 15, 10, 10, 5, 2.5, 100,]
+    probabilities = [20, 20, 15, 15, 10, 10, 5, 2.5, 2.5,]
     total_percentage = sum(probabilities)
     normalized_probabilities = [p / total_percentage for p in probabilities]
 
