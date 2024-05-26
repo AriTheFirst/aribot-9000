@@ -363,9 +363,10 @@ async def setbalance(ctx: interactions.CommandContext, user: str, amt: int):
         usercol = database[f"server-{ctx.guild_id}"]
         newvalue = { "$set": { "amt": f"{amt}" }}
         usercol.update_one(query, newvalue)
-        await ctx.send(f"<@{userchecked}>'s new balance was set to **{amt}** coins.")
+        formatted_balance = "{:,}".format(int(amt))
+        await ctx.send(f"<@{userchecked}>'s new balance was set to **{formatted_balance}** coins.")
     else:
-        await ctx.send("This command can only be run by arithefirst herself.",ephemeral=True)
+        await ctx.send("This command can only be run by <@613358761901424652> herself.")
 
 # Fish Command
 @bot.command(
