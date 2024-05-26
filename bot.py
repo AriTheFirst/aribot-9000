@@ -211,10 +211,10 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
                 await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
             else:
                 balance = answer.get("amt")
-                if int(balance) < int(wager):
+                if int(balance) < abs(int(wager)):
                     await ctx.send("You wagered more than you have in your account.\nPlease try again.")
                 else:
-                    newbalance = int(balance) + int(wager)
+                    newbalance = int(balance) + abs(int(wager))
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
                     print(f"New balance for {ctx.user.id} is {newbalance}")
                     usercol.update_one(query, newvalues)
@@ -228,10 +228,10 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
                 await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
             else:
                 balance = answer.get("amt")
-                if int(balance) < int(wager):
+                if int(balance) < abs(int(wager)):
                     await ctx.send("You wagered more than you have in your account.\nPlease try again.")
                 else:
-                    newbalance = int(balance) + int(wager)
+                    newbalance = int(balance) + abs(int(wager))
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
                     print(f"New balance for {ctx.user.id} is {newbalance}")
                     usercol.update_one(query, newvalues)
@@ -245,10 +245,10 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
                 await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
             else:
                 balance = answer.get("amt")
-                if int(balance) < int(wager):
+                if int(balance) < abs(int(wager)):
                     await ctx.send("You wagered more than you have in your account.\nPlease try again.")
                 else:
-                    newbalance = int(balance) - int(wager)
+                    newbalance = int(balance) - abs(int(wager))
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
                     print(f"New balance for {ctx.user.id} is {newbalance}")
                     usercol.update_one(query, newvalues)
@@ -262,10 +262,10 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
                 await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
             else:
                 balance = answer.get("amt")
-                if int(balance) < int(wager):
+                if int(balance) < abs(int(wager)):
                     await ctx.send("You wagered more than you have in your account.\nPlease try again.")
                 else:
-                    newbalance = int(balance) - int(wager)
+                    newbalance = int(balance) - abs(int(wager))
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
                     print(f"New balance for {ctx.user.id} is {newbalance}")
                     usercol.update_one(query, newvalues)
