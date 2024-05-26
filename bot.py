@@ -509,14 +509,14 @@ async def fish(ctx: interactions.CommandContext):
             await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
         else:
             balance = answer.get("amt")
-            if int(balance) == 0 or 1:
+            if int(balance) <= 1:
                 await ctx.send(f"You caught the {' '.join(fished_fish)}!\nHe tried to take half your coins, but you don't have any to take!")
             else: 
                 newbalance = int(balance)/2
                 roundedbalance = math.floor(newbalance)
                 newvalues = { "$set": { "amt": f"{roundedbalance}" }}
                 usercol.update_one(query, newvalues)
-                await ctx.send(f'You caught the {' '.join(fished_fish)}!\nHe took half your coins and now you have **{roundedbalance}**')
+                await ctx.send(f'You caught the **{' '.join(fished_fish)}**!\nHe took half your coins and now you have **{roundedbalance}**')
         
 # Launch The Bot
 print("Starting Bot....")
