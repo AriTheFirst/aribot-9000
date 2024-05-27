@@ -1,7 +1,8 @@
-<h1 align="center"><b>Aribot 9000: By <a href="https://arithefirst.com">arithefirst</a></b></h1>
+<p align="center"><img src=images/botpfp.png></p>
+<h1 align="center"><b>🤖 Aribot 9000: By <a href="https://arithefirst.com">arithefirst</a> 🤖</b></h1>
 <h4 align="center">Written in python using <a href="https://github.com/interactions-py">interactions.py</a> for The Discord API and <a href="https://www.mongodb.com/">MongoDB</a> for storing data of the currency system</h4>
 
-## Current Commands
+<h2>💾 Commands 💾</h2>
 
 ### /API
 **Inputs:** User (Ping or Snowflake)<br>
@@ -24,9 +25,9 @@
 **Description:** Sends you your current coin balance, gives you 100 coins if this is your first time using the command
 
 ### /Coinflip
-**Inputs:**
-    **Bet:** A bet on if the coin will land on heads or tails<br>
-    **Wager:** How much you want to wager on your bet<br>
+**Inputs:**<br>
+⠀⠀**⤷ Bet:** A bet on if the coin will land on heads or tails<br>
+⠀⠀**⤷ Wager:** How much you want to wager on your bet<br>
 **Description:** Flips a coin and optionally lets you wager on it's outcome
 
 ### /Fish
@@ -48,3 +49,9 @@
 ### /Timezone
 **Inputs:** Timezone in TZ format (optional) <br>
 **Description:** Displays the 4 major US Timezones, and displays a timezone of a User's input if one is submitted
+
+<h2>🕹️🚫 Gamebreakers 🚫🕹️</h2>
+<details closed>
+<summary>Simplicursed</summary>
+⠀ Simplicursed has been added as a gamebreaker for discovering that the /coinflip command could be exploited using negative numbers.
+<img src=images/simplicursed.png>
