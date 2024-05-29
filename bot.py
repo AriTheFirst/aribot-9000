@@ -559,10 +559,7 @@ async def send(ctx: interactions.CommandContext, user: str = None, amt: int = No
             newbal_sender = { "$set": { "amt": f"{int(sender_balance)-abs(int(amt))}" }}
             usercol.update_one(query_sender, newbal_sender)
             usercol.update_one(query_reciver, newbal_reciver)
-            await ctx.send(f"""<@{ctx.user.id}> sent **{amt}** Coins to <@{userchecked}>
-            <@{ctx.user.id}>'s new balance is **{int(sender_balance)-abs(int(amt))}**
-            <@{userchecked}>'s new balance is **{int(reciver_balance)+abs(int(amt))}**
-            """)
+            await ctx.send(f"<@{ctx.user.id}> sent **{amt}** Coins to <@{userchecked}>\n<@{ctx.user.id}>'s new balance is **{int(sender_balance)-abs(int(amt))}**\n<@{userchecked}>'s new balance is **{int(reciver_balance)+abs(int(amt))}**")
 
 
 # Launch The Bot
