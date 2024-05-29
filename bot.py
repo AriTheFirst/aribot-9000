@@ -547,7 +547,7 @@ async def send(ctx: interactions.CommandContext, user: str = None, amt: int = No
     else:
         reciver_balance = answer_reciver.get("amt")
         sender_balance = answer_sender.get("amt")
-        if int(newbal_sender) < amt:
+        if int(sender_balance) < amt:
             await ctx.send(f"You tried to send {amt}, which is more than you have in your account.\nPlease try again.")
         else:
             newbal_reciver = { "$set": { "amt": f"{int(reciver_balance)+abs(int(amt))}" }}
