@@ -53,11 +53,11 @@
 <h2>🕹️🚫 Gamebreakers 🚫🕹️</h2>
 <details closed>
 <summary>Simplicursed</summary>
-⠀ Simplicursed has been added as a gamebreaker for discovering that the /coinflip command could be exploited using negative numbers.
+⠀ <a href="https://discord.com/users/490112659711328257">Simplicursed</a> has been added as a gamebreaker for discovering that the /coinflip command could be exploited using negative numbers.
 <img src=images/simplicursed.png>
 </details>
 
 <details closed>
 <summary>Shegu</summary>
-⠀ Shegu has been added as a gamebreaker for discovering that the /API and /Banner commands would error out when used on most bots.
+⠀ <a href="https://discord.com/users/373905037057064970">Shegu</a> has been added as a gamebreaker for discovering that the /API and /Banner commands would error out when used on most bots.
 </details>
