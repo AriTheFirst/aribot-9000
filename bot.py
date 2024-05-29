@@ -542,8 +542,8 @@ async def send(ctx: interactions.CommandContext, user: str = None, amt: int = No
         await ctx.send("You must enter an amount of money to send")
     else:
         userchecked = re.sub("[^0-9]", "", f"{user}")
-        query_reciver = {"name": f"{userchecked}"}
-        query_sender = {"name:" f"{ctx.user.id}"}
+        query_reciver = {"name": str(userchecked)}
+        query_sender = {"name": str(ctx.user.id)}
         usercol = database[f"server-{ctx.guild_id}"]
         newvalue = { "$set": { "amt": f"{amt}" }}
         answer_reciver = usercol.find_one(query_reciver)
