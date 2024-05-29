@@ -33,7 +33,6 @@ def comma_seperate(number_str):
 @bot.command(
     name="api",
     description="Get data on a user from Discord's API",
-    scope=command_scopes,
     options = [
         interactions.Option(
             name="user",
@@ -63,7 +62,6 @@ async def api(ctx: interactions.CommandContext, user: str):
 @bot.command(
     name="avatar",
     description="Grab a user's avatar",
-    scope=command_scopes,
     options=[
         interactions.Option(
             name="user",
@@ -97,7 +95,6 @@ async def avatar(ctx: interactions.CommandContext, user: str):
 @bot.command(
     name="banner",
     description="Grab a user's banner, and if they don't have nitro give it's hex code",
-    scope=command_scopes,
     options=[
         interactions.Option(
             name="user",
@@ -138,7 +135,6 @@ async def banner(ctx: interactions.CommandContext, user: str):
 @bot.command(
     name="info",
     description="Give information about the bot",
-    scope=command_scopes,
 )
 async def info(ctx: interactions.CommandContext):
     await ctx.send("**## [Aribot 9000](https://github.com/AriTheFirst/aribot-9000): By [arithefirst](https://arithefirst.com)**Written in python using [interactions.py](https://github.com/interactions-py) for Discord API and [MongoDB](https://www.mongodb.com/) for storing data of the currency system")
@@ -155,7 +151,6 @@ async def ping(ctx: interactions.CommandContext):
 @bot.command(
     name="cat",
     description="Sends a random cat",
-    scope=command_scopes,
 )
 async def cat(ctx: interactions.CommandContext):
     # Make Request to the Cat API
@@ -548,6 +543,7 @@ async def send(ctx: interactions.CommandContext, user: str = None, amt: int = No
         else:
             newbal_reciver = { "$set": { "amt": f"{int(reciver_balance)+abs(int(amt))}" }}
             newbal_sender = { "$set": { "amt": f"{int(sender_balance)-abs(int(amt))}" }}
+            print(f"{ctx.user.id} sent {amt} coins to {userchecked}. {ctx.user.id} balance = {newbal_sender}, {userchecked} balance = {newbal_reciver}")
             usercol.update_one(query_sender, newbal_sender)
             usercol.update_one(query_reciver, newbal_reciver)
             await ctx.send(f"<@{ctx.user.id}> sent **{abs(amt)}** Coins to <@{userchecked}>\n<@{ctx.user.id}>'s new balance is **{int(sender_balance)-abs(int(amt))}**\n<@{userchecked}>'s new balance is **{int(reciver_balance)+abs(int(amt))}**")
