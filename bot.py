@@ -212,7 +212,7 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
             else:
                 balance = answer.get("amt")
                 if int(balance) < abs(int(wager)):
-                    await ctx.send(f"You wagered {wager}, which is more than you have in your account.\nPlease try again.")
+                    await ctx.send(f"You wagered **{wager}** Coins,which is more than you have in your account.\nPlease try again.")
                 else:
                     newbalance = int(balance) + abs(int(wager))
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
@@ -229,7 +229,7 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
             else:
                 balance = answer.get("amt")
                 if int(balance) < abs(int(wager)):
-                    await ctx.send(f"You wagered {wager}, which is more than you have in your account.\nPlease try again.")
+                    await ctx.send(f"You wagered **{wager}** Coins,which is more than you have in your account.\nPlease try again.")
                 else:
                     newbalance = int(balance) + abs(int(wager))
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
@@ -246,7 +246,7 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
             else:
                 balance = answer.get("amt")
                 if int(balance) < abs(int(wager)):
-                    await ctx.send(f"You wagered {wager}, which is more than you have in your account.\nPlease try again.")
+                    await ctx.send(f"You wagered **{wager}** Coins,which is more than you have in your account.\nPlease try again.")
                 else:
                     newbalance = int(balance) - abs(int(wager))
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
@@ -263,7 +263,7 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
             else:
                 balance = answer.get("amt")
                 if int(balance) < abs(int(wager)):
-                    await ctx.send(f"You wagered {wager}, which is more than you have in your account.\nPlease try again.")
+                    await ctx.send(f"You wagered **{wager}** Coins,which is more than you have in your account.\nPlease try again.")
                 else:
                     newbalance = int(balance) - abs(int(wager))
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
@@ -548,7 +548,7 @@ async def send(ctx: interactions.CommandContext, user: str = None, amt: int = No
         reciver_balance = answer_reciver.get("amt")
         sender_balance = answer_sender.get("amt")
         if int(sender_balance) < amt:
-            await ctx.send(f"You tried to send {amt}, which is more than you have in your account.\nPlease try again.")
+            await ctx.send(f"You tried to send **{amt}** Coins, which is more than you have in your account.\nPlease try again.")
         else:
             newbal_reciver = { "$set": { "amt": f"{int(reciver_balance)+abs(int(amt))}" }}
             newbal_sender = { "$set": { "amt": f"{int(sender_balance)-abs(int(amt))}" }}
