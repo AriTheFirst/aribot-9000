@@ -55,3 +55,9 @@
 <summary>Simplicursed</summary>
 ⠀ Simplicursed has been added as a gamebreaker for discovering that the /coinflip command could be exploited using negative numbers.
 <img src=images/simplicursed.png>
+</details>
+
+<details closed>
+<summary>Shegu</summary>
+⠀ Shegu has been added as a gamebreaker for discovering that the /API and /Banner commands would error out when used on most bots.
+</details>
