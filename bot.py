@@ -21,6 +21,10 @@ bot = interactions.Client(token=TOKEN)
 # Define Command Scopes
 command_scopes = [752667089155915846, 1221655728029302865, 1172683672856567808]
 
+# Function for setting embed colors
+def embedcolor(hex_code):
+    return int(hex_code.lstrip('#'), 16)
+
 # Set up some stuff for MongoDB
 dbclient = pymongo.MongoClient("mongodb://10.0.0.21:27017")
 database = dbclient["aribot-currency"]
@@ -52,9 +56,14 @@ async def api(ctx: interactions.CommandContext, user: str):
         response_dict = response.json() 
         username = response_dict['global_name']
         if username == None:
-            username = answer['username']
+            username = response_dict['username']
         json_formatted_str = json.dumps(response_dict, indent=4, sort_keys=True)
-        await ctx.send(f"Here is the Discord API response for {username}:\n```json\n{json_formatted_str}```")
+        embed = interactions.Embed(
+            title=f"{username}'s API Response",
+            description=f"```json\n{json_formatted_str}```",
+            color=embedcolor("#cba6f7")
+        )
+        await ctx.send(embeds=[embed])
     else:
         await ctx.send("Discord API Request Failed.\nThere could be multiple reasons for this:\n- You pinged a role instead of a user\n- You didn't ping the user but typed their name instead\n- You typed nonsense into the input\n- The Discord API Could be down (unlikely)",ephemeral=True)
 
@@ -84,9 +93,14 @@ async def avatar(ctx: interactions.CommandContext, user: str):
         print(f"{avatar_id}")
         if username == None:
             username = answer['username']
-        avatar_url = f"https://cdn.discordapp.com/avatars/{userchecked}/{avatar_id}.png?size=2048"
+        avatar_url = f"https://cdn.discordapp.com/avatars/{userchecked}/{avatar_id}.png?size=128"
         print(f"Got Avatar URL for User {userchecked}: {avatar_url}")
-        await ctx.send(f"[Here]({avatar_url}) is {username}'s avatar!")
+        embed = interactions.Embed(
+            title=f"{username}'s avatar",
+            image=interactions.EmbedImageStruct(url=f"{avatar_url}"),
+            color=embedcolor("#cba6f7")
+        )
+        await ctx.send(embeds=[embed])
     else:
         print(f"API Request Failed with code {response.status_code}")
         await ctx.send("Discord API Request Failed.\nThere could be multiple reasons for this:\n- You pinged a role instead of a user\n- You didn't ping the user but typed their name instead\n- You typed nonsense into the input\n- The Discord API Could be down (unlikely)",ephemeral=True)
@@ -119,14 +133,29 @@ async def banner(ctx: interactions.CommandContext, user: str):
         if username == None:
             username = answer['username']
         if banner_id == None:
-            print("User does not have Nitro, Grabbing Hex Code....")
-            print(f"Hex Code {banner_hex} found")
-            hex_no_pound = re.sub('[^A-Za-z0-9]', '', banner_hex)
-            await ctx.send(f"{username}'s banner Hex is [{banner_hex}](https://singlecolorimage.com/get/{hex_no_pound}/600x240)")
+            print(f"{userchecked} does not have Nitro, Grabbing Hex Code....")
+            if banner_hex == None:
+                await ctx.send(f"<@{userchecked}> has no banner, nor a banner hex code.")
+                print(f"Could not find banner or hex code for {userchecked}")
+            else:
+                print(f"Hex Code {banner_hex} found")
+                hex_no_pound = re.sub('[^A-Za-z0-9]', '', banner_hex)
+                embed = interactions.Embed(
+                    title=f"{username}'s banner",
+                    footer=interactions.EmbedFooter(text=f"{banner_hex}"),
+                    image=interactions.EmbedImageStruct(url=f"https://singlecolorimage.com/get/{hex_no_pound}/600x240"),
+                    color=embedcolor("#cba6f7")
+                )
+                await ctx.send(embeds=[embed])
         else:
             banner_url = f"https://cdn.discordapp.com/banners/{userchecked}/{banner_id}.png?size=4096"
             print(f"Got Banner URL for User {userchecked}: {banner_url}")
-            await ctx.send(f"[Here]({banner_url}) is {username}'s banner!")
+            embed = interactions.Embed(
+                title=f"{username}'s banner",
+                image=interactions.EmbedImageStruct(url=f"{banner_url}"),
+                color=embedcolor("#cba6f7")
+            )
+            await ctx.send(embeds=[embed])
     else:
         print(f"API Request Failed with code {response.status_code}")
         await ctx.send("Discord API Request Failed.\nThere could be multiple reasons for this:\n- You pinged a role instead of a user\n- You didn't ping the user but typed their name instead\n- You typed nonsense into the input\n- The Discord API Could be down (unlikely)",ephemeral=True)
@@ -539,7 +568,7 @@ async def send(ctx: interactions.CommandContext, user: str = None, amt: int = No
         reciver_balance = answer_reciver.get("amt")
         sender_balance = answer_sender.get("amt")
         if int(sender_balance) < abs(amt):
-            await ctx.send(f"You tried to send **{amt}** Coins, which is more than you have in your account.\nPlease try again.")
+            await ctx.send(f"You tried to send **{abs(amt)}** Coins, which is more than you have in your account.\nPlease try again.")
         else:
             newbal_reciver = { "$set": { "amt": f"{int(reciver_balance)+abs(int(amt))}" }}
             newbal_sender = { "$set": { "amt": f"{int(sender_balance)-abs(int(amt))}" }}
