@@ -555,8 +555,8 @@ async def send(ctx: interactions.CommandContext, user: str = None, amt: int = No
         else:
             reciver_balance = answer_reciver.get("amt")
             sender_balance = answer_sender.get("amt")
-            newbal_reciver = { "$set": { "amt": f"{reciver_balance+abs(int(amt))}" }}
-            newbal_sender = { "$set": { "amt": f"{sender_balance-abs(int(amt))}" }}
+            newbal_reciver = { "$set": { "amt": f"{int(reciver_balance)+abs(int(amt))}" }}
+            newbal_sender = { "$set": { "amt": f"{int(sender_balance)-abs(int(amt))}" }}
             usercol.update_one(query_sender, newbal_sender)
             usercol.update_one(query_reciver, newbal_reciver)
             await ctx.send(f"<@{ctx.user.id}> sent **{amt}** Coins to <@{userchecked}>\n<@{ctx.user.id}>'s new balance is **{newbal_sender}**\n<@{userchecked}'s new balance is **{newbal_reciver}**")
