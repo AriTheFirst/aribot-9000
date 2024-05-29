@@ -543,7 +543,7 @@ async def send(ctx: interactions.CommandContext, user: str = None, amt: int = No
     if answer_sender == None:
         await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
     elif answer_reciver == None:
-        await ctx.send(f"<@{user}> dosen't have a bank account with us! Tell them to run `/checkbalance`")
+        await ctx.send(f"<@{userchecked}> dosen't have a bank account with us! Tell them to run `/checkbalance`")
     else:
         reciver_balance = answer_reciver.get("amt")
         sender_balance = answer_sender.get("amt")
