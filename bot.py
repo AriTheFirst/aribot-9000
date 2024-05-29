@@ -451,6 +451,8 @@ async def fish(ctx: interactions.CommandContext):
                 newvalues = { "$set": { "amt": f"{newbalance}", "lastfished": f"{math.floor(time.time())}" }}
                 usercol.update_one(query, newvalues)
                 await ctx.send(f'You caught {vowel_check(fished_fish)} worth **{comma_seperate(int(newbalance)-int(balance))}** Coins! Your new balance is **{comma_seperate(newbalance)}**.')
+        
+        # Oar Fish Code
         elif ' '.join(fished_fish) == "Oar Fish":
             if answer == None:
                 await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
@@ -462,6 +464,8 @@ async def fish(ctx: interactions.CommandContext):
                 newvalues = { "$set": { "amt": f"{newbalance}", "lastfished": f"{math.floor(time.time())}" }}
                 usercol.update_one(query, newvalues)
                 await ctx.send(f'You caught {vowel_check(fished_fish)} worth **{comma_seperate(int(newbalance)-int(balance))}** Coins! Your new balance is **{comma_seperate(newbalance)}**.')
+        
+        # Funny Stupid Fish Code
         elif ' '.join(fished_fish) == "Funny Stupid Fish": 
             if answer == None:
                 await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
@@ -473,6 +477,8 @@ async def fish(ctx: interactions.CommandContext):
                 newvalues = { "$set": { "amt": f"{newbalance}", "lastfished": f"{math.floor(time.time())}" }}
                 usercol.update_one(query, newvalues)
                 await ctx.send(f'You caught {vowel_check(fished_fish)} worth **{comma_seperate(int(newbalance)-int(balance))}** Coins! Your new balance is **{comma_seperate(newbalance)}**.')
+       
+        # Salmon Code
         elif ' '.join(fished_fish) == "Salmon":
             if answer == None:
                 await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
@@ -484,6 +490,8 @@ async def fish(ctx: interactions.CommandContext):
                 newvalues = { "$set": { "amt": f"{newbalance}", "lastfished": f"{math.floor(time.time())}" }}
                 usercol.update_one(query, newvalues)
                 await ctx.send(f'You caught {vowel_check(fished_fish)} worth **{comma_seperate(int(newbalance)-int(balance))}** Coins! Your new balance is **{comma_seperate(newbalance)}**.')
+       
+        # Sea Bunny Code       
         elif ' '.join(fished_fish) == "Sea Bunny":
             if answer == None:
                 await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
@@ -495,6 +503,8 @@ async def fish(ctx: interactions.CommandContext):
                 newvalues = { "$set": { "amt": f"{newbalance}", "lastfished": f"{math.floor(time.time())}" }}
                 usercol.update_one(query, newvalues)
                 await ctx.send(f'You caught {vowel_check(fished_fish)} worth **{comma_seperate(int(newbalance)-int(balance))}** Coins! Your new balance is **{comma_seperate(newbalance)}**.')
+        
+        # Wedding Ring Code
         elif ' '.join(fished_fish) == "Wedding Ring":
             if answer == None:
                 await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
@@ -506,6 +516,8 @@ async def fish(ctx: interactions.CommandContext):
                 newvalues = { "$set": { "amt": f"{newbalance}", "lastfished": f"{math.floor(time.time())}" }}
                 usercol.update_one(query, newvalues)
                 await ctx.send(f'You caught {vowel_check(fished_fish)} worth **{comma_seperate(int(newbalance)-int(balance))}** Coins! Your new balance is **{comma_seperate(newbalance)}**.')
+    
+        # Goblin Code
         elif ' '.join(fished_fish) == "Ancient Evil Goblin That Steals your Coins":
             query = {"name": str(ctx.user.id)}
             usercol = database[f"server-{ctx.guild_id}"]
