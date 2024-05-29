@@ -320,27 +320,47 @@ async def timezone(ctx: interactions.CommandContext, timezone: str = None):  # C
 async def identify(ctx: interactions.CommandContext):
     await ctx.send(f'**User ID:** {ctx.user.id}\n**Guild ID:** {ctx.guild_id}')
 
-# Check Balance Command
+# Checkbalance Command
 @bot.command(
     name="checkbalance",
     description="Checks your balance",
     scope=command_scopes,
+    options=[
+        interactions.Option(
+            name="user",
+            description="User to check balance of (optional)",
+            type=interactions.OptionType.STRING,
+            required=False,
+        ),
+    ]
 )
-async def checkbal(ctx: interactions.CommandContext):
-    query = {"name": str(ctx.user.id)}
-    usercol = database[f"server-{ctx.guild_id}"]
-    answer = usercol.find_one(query)
-    
-    if answer is None:
-        name = str(ctx.user.id)
-        default_values = { "name": f"{name}", "amt": "100", "lastfished": "0"}
-        inst = usercol.insert_one(default_values)
-        print(f"Added Entry {inst.inserted_id}")
-        await ctx.send("You couldn't be found in the database, so I take it this is your first time banking with us,\nHere's 100 Coins for free!")
-    else:
-        balance = answer.get("amt")
-        formatted_blance = comma_seperate(balance)
-        await ctx.send(f"Your balance is **{formatted_blance}** coins.")
+async def checkbal(ctx: interactions.CommandContext, user: str):
+    if user == None:
+            query = {"name": str(ctx.user.id)}
+            usercol = database[f"server-{ctx.guild_id}"]
+            answer = usercol.find_one(query)
+            if answer == None:
+                name = str(ctx.user.id)
+                default_values = { "name": f"{name}", "amt": "100", "lastfished": "0"}
+                inst = usercol.insert_one(default_values)
+                print(f"Added Entry {inst.inserted_id}")
+                await ctx.send("You couldn't be found in the database, so I take it this is your first time banking with us.\nHere's 100 Coins for free!")
+            else:
+                balance = answer.get("amt")
+                formatted_blance = comma_seperate(balance)
+                await ctx.send(f"Your balance is **{formatted_blance}** coins.")
+    else: 
+        userchecked = re.sub("[^0-9]", "", f"{user}")
+        query = {"name": str(userchecked)}
+        usercol = database[f"server-{ctx.guild_id}"]
+        answer = usercol.find_one(query)
+        if answer == None:
+            await ctx.send(f"@<{userchecked}> dosen't have an account open.")
+        else:
+            balance = answer.get("amt")
+            formatted_blance = comma_seperate(balance)
+            await ctx.send(f"<@{userchecked}>'s balance is **{formatted_blance}** coins.")
+
 
 # Setbalance Command
 @bot.command(
