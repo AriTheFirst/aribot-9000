@@ -328,9 +328,9 @@ async def identify(ctx: interactions.CommandContext):
     options=[
         interactions.Option(
             name="user",
-            description="User to check balance of (optional)",
+            description="user to check the balance of (optional)",
             type=interactions.OptionType.STRING,
-            required=False,
+            required=False
         ),
     ]
 )
