@@ -222,7 +222,7 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
                     usercol.update_one(query, newvalues)
                     await ctx.send(f"You win! **{comma_seperate(abs(int(wager)))}** coins have been added to your account!\nYour new balance is **{comma_seperate(newbalance)}**!")
                 # Lose          
-                elif bet.lower() == "tails" and result == 0 or bet.lower() == "heads" and result == 1:
+                else:
                     newbalance = int(balance) - abs(int(wager))
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
                     print(f"Lose on {bet.lower()} for {ctx.user.id}: Balance = {newbalance}")
