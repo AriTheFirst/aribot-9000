@@ -401,7 +401,7 @@ async def setbalance(ctx: interactions.CommandContext, user: str, amt: int):
     scope=command_scopes,
     )
 async def fish(ctx: interactions.CommandContext):
-    items = ['Old Boot', 'Rock', 'Wallet', 'Oar Fish', 'Funny Stupid Fish', 'Salmon', 'Sea Bunny', 'Wedding Ring', 'Ancient Evil Goblin That Steals your Coins']
+    items = ['Old Boot', 'Rock', 'Wallet', 'Oar Fish', 'Funny Stupid Fish', 'Salmon', 'Sea Bunny', 'Wedding Ring', 'Mortimer: The Ancient Evil Goblin That Steals your Coins']
     probabilities = [20, 20, 15, 15, 10, 10, 5, 2.5, 2.5,]
     total_percentage = sum(probabilities)
     normalized_probabilities = [p / total_percentage for p in probabilities]
@@ -538,7 +538,7 @@ async def fish(ctx: interactions.CommandContext):
                 await ctx.send(f'You caught {vowel_check(fished_fish)} worth **{comma_seperate(int(newbalance)-int(balance))}** Coins! Your new balance is **{comma_seperate(newbalance)}**.')
     
         # Goblin Code
-        elif ' '.join(fished_fish) == "Ancient Evil Goblin That Steals your Coins":
+        elif ' '.join(fished_fish) == "Mortimer: The Ancient Evil Goblin That Steals your Coins":
             query = {"name": str(ctx.user.id)}
             usercol = database[f"server-{ctx.guild_id}"]
             answer = usercol.find_one(query)
@@ -547,7 +547,7 @@ async def fish(ctx: interactions.CommandContext):
             else:
                 balance = answer.get("amt")
                 if int(balance) <= 1:
-                    await ctx.send(f"You caught the {' '.join(fished_fish)}!\nHe tried to take half your coins, but you don't have any to take!")
+                    await ctx.send(f"You caught the {' '.join(fished_fish)}!\nHe tried to take half your coins, but you were too poor!")
                 else: 
                     newbalance = int(balance)/2
                     roundedbalance = math.floor(newbalance)
