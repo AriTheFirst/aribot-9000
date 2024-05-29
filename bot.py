@@ -512,7 +512,51 @@ async def fish(ctx: interactions.CommandContext):
                     newvalues = { "$set": { "amt": f"{roundedbalance}", "lastfished": f"{math.floor(time.time())}" }}
                     usercol.update_one(query, newvalues)
                     await ctx.send(f'You caught the **{' '.join(fished_fish)}**!\nHe took half your coins and now you have **{comma_seperate(roundedbalance)}**')
-        
+
+# Send Command
+@bot.command(
+    name="send",
+    description="Sends money to another user",
+    scope=command_scopes,
+    options=[
+        interactions.Option(
+            name="user",
+            description="User to send money to",
+            type=interactions.OptionType.STRING,
+            required=True,
+        ),
+        interactions.Option(
+            name="amt",
+            description="Amount of money to send",
+            type=interactions.OptionType.INTEGER,
+            required=True,
+        ),
+    ]
+)
+async def send(ctx: interactions.CommandContext, user: str = None, amt: int = None):
+    if user == None and amt == None:
+        await ctx.send("You must enter a user and amount of money to send")
+    elif user == None:
+        await ctx.send("You must enter a user to send money to")
+    elif amt == None:
+        await ctx.send("You must enter an amount of money to send")
+    else:
+        userchecked = re.sub("[^0-9]", "", f"{user}")
+        query_reciver = {"name": f"{userchecked}"}
+        query_Sender = {"name:" f"{ctx.user.id}"}
+        usercol = database[f"server-{ctx.guild_id}"]
+        newvalue = { "$set": { "amt": f"{amt}" }}
+        answer_reciver = usercol.find_one(query_reciver)
+        answer_sender = usercol.find_one(query_sender)
+        reciver_balance = answer_reciver.get("amt")
+        sender_balance = answer_sender.get("amt")
+        newbal_reciver = { "$set": { "amt": f"{reciver_balance+abs(int(amt))}" }}
+        newbal_sender = { "$set": { "amt": f"{sender_balance-abs(int(amt))}" }}
+        usercol.update_one(query_sender, newbal_sender)
+        usercol.update_one(query_reciver, newbal_reciver)
+        await ctx.send(f"<@{ctx.user.id}> sent **{amt}** Coins to <@{userchecked}>\n<@{ctx.user.id}>'s new balance is **{newbal_sender}**\n<@{userchecked}'s new balance is **{newbal_reciver}**")
+
+
 # Launch The Bot
 print("Starting Bot....")
 print("""   ___       _ ___       __    ___  ___  ___  ___ 
