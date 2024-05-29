@@ -158,12 +158,16 @@ async def ping(ctx: interactions.CommandContext):
     scope=command_scopes,
 )
 async def cat(ctx: interactions.CommandContext):
+    # Make Request to the Cat API
     url = "https://api.thecatapi.com/v1/images/search?limit=1&has_breeds=1"
     headers = {"x-api-key": CAT_TOKEN}
     response = requests.get(url, headers=headers)
+
+    # Check if Request Failed
     if response.status_code == 200:
         print("Request successful!")
         answer = response.json()
+        # Pull Response Data
         cat_url = answer[0]['url']
         breed_full = answer[0]['breeds']
         breed = breed_full[0]['name']
@@ -341,7 +345,7 @@ async def checkbal(ctx: interactions.CommandContext):
 # Setbalance Command
 @bot.command(
     name="setbalance",
-    description="Checks your balance",
+    description="Sets a user's balance",
     scope=command_scopes,
     options=[
         interactions.Option(
@@ -408,6 +412,8 @@ async def fish(ctx: interactions.CommandContext):
         await ctx.send(f"The /fish command is on cooldown!\nYou have **{convert_ms(150-(math.floor(time.time())-int(lastfished)))}** left.")
     elif roundtime - int(lastfished) > 150:
         fished_fish = random.SystemRandom().choices(items, weights=normalized_probabilities, k=1)
+
+        # Old Boot Code
         if ' '.join(fished_fish) == "Old Boot":
             if answer == None:
                 await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
@@ -419,6 +425,8 @@ async def fish(ctx: interactions.CommandContext):
                 newvalues = { "$set": { "amt": f"{newbalance}", "lastfished": f"{math.floor(time.time())}" }}
                 usercol.update_one(query, newvalues)
                 await ctx.send(f'You caught {vowel_check(fished_fish)} worth **{comma_seperate(int(newbalance)-int(balance))}** Coins! Your new balance is **{comma_seperate(newbalance)}**.')
+        
+        # Rock Code
         elif ' '.join(fished_fish) == "Rock":
             if answer == None:
                 await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
@@ -430,6 +438,8 @@ async def fish(ctx: interactions.CommandContext):
                 newvalues = { "$set": { "amt": f"{newbalance}", "lastfished": f"{math.floor(time.time())}" }}
                 usercol.update_one(query, newvalues)
                 await ctx.send(f'You caught {vowel_check(fished_fish)} worth **{comma_seperate(int(newbalance)-int(balance))}** Coins! Your new balance is **{comma_seperate(newbalance)}**.')
+       
+       # Wallet Code
         elif ' '.join(fished_fish) == "Wallet":
             if answer == None:
                 await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
@@ -547,14 +557,14 @@ async def send(ctx: interactions.CommandContext, user: str = None, amt: int = No
     else:
         reciver_balance = answer_reciver.get("amt")
         sender_balance = answer_sender.get("amt")
-        if int(sender_balance) < amt:
+        if int(sender_balance) < abs(amt):
             await ctx.send(f"You tried to send **{amt}** Coins, which is more than you have in your account.\nPlease try again.")
         else:
             newbal_reciver = { "$set": { "amt": f"{int(reciver_balance)+abs(int(amt))}" }}
             newbal_sender = { "$set": { "amt": f"{int(sender_balance)-abs(int(amt))}" }}
             usercol.update_one(query_sender, newbal_sender)
             usercol.update_one(query_reciver, newbal_reciver)
-            await ctx.send(f"<@{ctx.user.id}> sent **{amt}** Coins to <@{userchecked}>\n<@{ctx.user.id}>'s new balance is **{int(sender_balance)-abs(int(amt))}**\n<@{userchecked}>'s new balance is **{int(reciver_balance)+abs(int(amt))}**")
+            await ctx.send(f"<@{ctx.user.id}> sent **{abs(amt)}** Coins to <@{userchecked}>\n<@{ctx.user.id}>'s new balance is **{int(sender_balance)-abs(int(amt))}**\n<@{userchecked}>'s new balance is **{int(reciver_balance)+abs(int(amt))}**")
 
 
 # Launch The Bot
