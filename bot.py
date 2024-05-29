@@ -548,13 +548,18 @@ async def send(ctx: interactions.CommandContext, user: str = None, amt: int = No
         newvalue = { "$set": { "amt": f"{amt}" }}
         answer_reciver = usercol.find_one(query_reciver)
         answer_sender = usercol.find_one(query_sender)
-        reciver_balance = answer_reciver.get("amt")
-        sender_balance = answer_sender.get("amt")
-        newbal_reciver = { "$set": { "amt": f"{reciver_balance+abs(int(amt))}" }}
-        newbal_sender = { "$set": { "amt": f"{sender_balance-abs(int(amt))}" }}
-        usercol.update_one(query_sender, newbal_sender)
-        usercol.update_one(query_reciver, newbal_reciver)
-        await ctx.send(f"<@{ctx.user.id}> sent **{amt}** Coins to <@{userchecked}>\n<@{ctx.user.id}>'s new balance is **{newbal_sender}**\n<@{userchecked}'s new balance is **{newbal_reciver}**")
+        if answer_sender == None:
+            await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
+        elif answer_reciver == None:
+            (f"<@{user}> dosen't have a bank account with us! Tell them to run `/checkbalance`")
+        else:
+            reciver_balance = answer_reciver.get("amt")
+            sender_balance = answer_sender.get("amt")
+            newbal_reciver = { "$set": { "amt": f"{reciver_balance+abs(int(amt))}" }}
+            newbal_sender = { "$set": { "amt": f"{sender_balance-abs(int(amt))}" }}
+            usercol.update_one(query_sender, newbal_sender)
+            usercol.update_one(query_reciver, newbal_reciver)
+            await ctx.send(f"<@{ctx.user.id}> sent **{amt}** Coins to <@{userchecked}>\n<@{ctx.user.id}>'s new balance is **{newbal_sender}**\n<@{userchecked}'s new balance is **{newbal_reciver}**")
 
 
 # Launch The Bot
