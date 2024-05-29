@@ -543,7 +543,7 @@ async def send(ctx: interactions.CommandContext, user: str = None, amt: int = No
     else:
         userchecked = re.sub("[^0-9]", "", f"{user}")
         query_reciver = {"name": f"{userchecked}"}
-        query_Sender = {"name:" f"{ctx.user.id}"}
+        query_sender = {"name:" f"{ctx.user.id}"}
         usercol = database[f"server-{ctx.guild_id}"]
         newvalue = { "$set": { "amt": f"{amt}" }}
         answer_reciver = usercol.find_one(query_reciver)
