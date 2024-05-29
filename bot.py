@@ -197,81 +197,35 @@ async def cat(ctx: interactions.CommandContext):
     ]
 )
 async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int = None):
-    rng = random.SystemRandom()
-    result = rng.randint(0, 1)
+    result = random.SystemRandom().randint(0, 1)
     if bet is None or wager is None:
         if result == 0:
             await ctx.send("The Coin landed on Heads!")
         else:
             await ctx.send("The Coin landed on Tails!")
     else:
-        bet_lowercase = bet.lower()
-        # Win on Tails
-        if bet_lowercase == "tails" and result == 1:
-            query = {"name": str(ctx.user.id)}
-            usercol = database[f"server-{ctx.guild_id}"]
-            answer = usercol.find_one(query)
-            if answer == None:
+        query = {"name": str(ctx.user.id)}
+        usercol = database[f"server-{ctx.guild_id}"]
+        answer = usercol.find_one(query)
+        if answer == None:
                 await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
+        else:
+            balance = answer.get("amt")
+            if int(balance) < abs(int(wager)):
+                await ctx.send(f"You wagered **{wager}** Coins,which is more than you have in your account.\nPlease try again.")
             else:
-                balance = answer.get("amt")
-                if int(balance) < abs(int(wager)):
-                    await ctx.send(f"You wagered **{wager}** Coins,which is more than you have in your account.\nPlease try again.")
-                else:
+                # Win
+                if bet.lower() == "tails" and result == 1 or bet.lower() == "heads" and result == 0:
                     newbalance = int(balance) + abs(int(wager))
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
-                    print(f"Win on Tails for {ctx.user.id}: Balance = {newbalance}")
+                    print(f"Win on {bet.lower()} for {ctx.user.id}: Balance = {newbalance}")
                     usercol.update_one(query, newvalues)
                     await ctx.send(f"You win! **{comma_seperate(abs(int(wager)))}** coins have been added to your account!\nYour new balance is **{comma_seperate(newbalance)}**!")
-        # Win on Heads
-        elif bet_lowercase == "heads" and result == 0:
-            query = {"name": str(ctx.user.id)}
-            usercol = database[f"server-{ctx.guild_id}"]
-            answer = usercol.find_one(query)
-            if answer == None:
-                await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
-            else:
-                balance = answer.get("amt")
-                if int(balance) < abs(int(wager)):
-                    await ctx.send(f"You wagered **{wager}** Coins,which is more than you have in your account.\nPlease try again.")
-                else:
-                    newbalance = int(balance) + abs(int(wager))
-                    newvalues = { "$set": { "amt": f"{newbalance}" }}
-                    print(f"Win on Heads for {ctx.user.id}: Balance = {newbalance}")
-                    usercol.update_one(query, newvalues)
-                    await ctx.send(f"You win! **{comma_seperate(abs(int(wager)))}** coins have been added to your account!\nYour new balance is **{comma_seperate(newbalance)}**!")
-        # Lose on Tails            
-        elif bet_lowercase == "tails" and result == 0:
-            query = {"name": str(ctx.user.id)}
-            usercol = database[f"server-{ctx.guild_id}"]
-            answer = usercol.find_one(query)
-            if answer == None:
-                await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
-            else:
-                balance = answer.get("amt")
-                if int(balance) < abs(int(wager)):
-                    await ctx.send(f"You wagered **{wager}** Coins,which is more than you have in your account.\nPlease try again.")
-                else:
+                # Lose          
+                elif bet.lower() == "tails" and result == 0 or bet.lower() == "heads" and result == 1:
                     newbalance = int(balance) - abs(int(wager))
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
-                    print(f"Lose on Tails for {ctx.user.id}: Balance = {newbalance}")
-                    usercol.update_one(query, newvalues)
-                    await ctx.send(f"You Lose. **{comma_seperate(abs(int(wager)))}** coins have been removed from your account.\nYour new balance is **{comma_seperate(newbalance)}**!")
-        # Lose on Heads
-        elif bet_lowercase == "heads" and result == 1:
-            query = {"name": str(ctx.user.id)}
-            usercol = database[f"server-{ctx.guild_id}"]
-            answer = usercol.find_one(query)
-            if answer == None:
-                await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
-            else:
-                balance = answer.get("amt")
-                if int(balance) < abs(int(wager)):
-                    await ctx.send(f"You wagered **{wager}** Coins,which is more than you have in your account.\nPlease try again.")
-                else:
-                    newbalance = int(balance) - abs(int(wager))
-                    newvalues = { "$set": { "amt": f"{newbalance}" }}
-                    print(f"Lose on Heads for {ctx.user.id}: Balance = {newbalance}")
+                    print(f"Lose on {bet.lower()} for {ctx.user.id}: Balance = {newbalance}")
                     usercol.update_one(query, newvalues)
                     await ctx.send(f"You Lose. **{comma_seperate(abs(int(wager)))}** coins have been removed from your account.\nYour new balance is **{comma_seperate(newbalance)}**!")
 
