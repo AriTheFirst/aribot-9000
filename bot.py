@@ -334,7 +334,7 @@ async def identify(ctx: interactions.CommandContext):
         ),
     ]
 )
-async def checkbal(ctx: interactions.CommandContext, user: str):
+async def checkbal(ctx: interactions.CommandContext, user: str == None):
     if user == None:
             query = {"name": str(ctx.user.id)}
             usercol = database[f"server-{ctx.guild_id}"]
