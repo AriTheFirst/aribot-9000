@@ -21,13 +21,13 @@
 **Description:** Sends an image of a cat
 
 ### /Checkbalance
-**Inputs:** N/A<br>
+**Inputs:** User (Ping or Snowflake); Optional<br>
 **Description:** Sends you your current coin balance, gives you 100 coins if this is your first time using the command
 
 ### /Coinflip
 **Inputs:**<br>
-⠀⠀**⤷ Bet:** A bet on if the coin will land on heads or tails<br>
-⠀⠀**⤷ Wager:** How much you want to wager on your bet<br>
+╰──**Bet:** A bet on if the coin will land on heads or tails<br>
+╰──**Wager:** How much you want to wager on your bet<br>
 **Description:** Flips a coin and optionally lets you wager on it's outcome
 
 ### /Fish
@@ -45,6 +45,12 @@
 ### /Info
 **Inputs:** N/A<br>
 **Description:** Gives basic info about the bot
+
+### /Send
+**Inputs:**<br>
+╰──**Amt:** How much money to send<br>
+╰──**User:** Who to send money to<br>
+**Description:** Flips a coin and optionally lets you wager on it's outcome
 
 ### /Timezone
 **Inputs:** Timezone in TZ format (optional) <br>
