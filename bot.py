@@ -628,6 +628,7 @@ async def spotify(ctx: interactions.CommandContext, query: str = None):
         color=embedcolor("#cba6f7"),
         thumbnail=interactions.EmbedImageStruct(url=reply['tracks']['items'][0]['album']['images'][0]['url']),
         fields=[
+            interactions.EmbedField(name="Title", value=reply['tracks']['items'][0]['name'], inline=False),
             interactions.EmbedField(name=f"Album Title", value=reply['tracks']['items'][0]['album']['name'], inline=False),
             interactions.EmbedField(name=f"Album Artist", value=reply['tracks']['items'][0]['album']['artists'][0]['name'], inline=False),
             interactions.EmbedField(name=f"Track URL", value=reply['tracks']['items'][0]['external_urls']['spotify'], inline=False),
