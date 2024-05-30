@@ -11,11 +11,13 @@ import random
 import pymongo
 from dotenv import load_dotenv
 import math
+import urllib.parse
 
 # Grab bot token from enviroment
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
 CAT_TOKEN = os.getenv("CAT_TOKEN")
+SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_SECRET")
 bot = interactions.Client(token=TOKEN)
 
 # Define Command Scopes
@@ -589,6 +591,51 @@ async def send(ctx: interactions.CommandContext, user: str = None, amt: int = No
                 ]
             )
             await ctx.send(embeds=[embed])
+
+@bot.command(
+    name="spotify",
+    description="Searches Spotify through the Spotify API",
+    scope=command_scopes,
+    options=[
+        interactions.Option(
+            name="query",
+            description="Search Query",
+            type=interactions.OptionType.STRING,
+            required=True,
+        ),
+    ]
+)
+async def spotify(ctx: interactions.CommandContext, query: str = None):
+    keygen_url = "https://accounts.spotify.com/api/token"
+    keygen_headers = {"Content-Type": "application/x-www-form-urlencoded",}
+    keygen_data = {
+    "grant_type": "client_credentials",
+    "client_id": "80b7971a22ec46358240b5bde22180a4",
+    "client_secret": f"{SPOTIFY_CLIENT_SECRET}",
+    }
+
+    keygen_request = requests.post(keygen_url, headers=keygen_headers, data=keygen_data)
+    spotify_api_key = keygen_request.json()["access_token"]
+
+    url = f"https://api.spotify.com/v1/search?q={query}&type=track&limit=1"
+    headers = {'Authorization': f'Bearer {spotify_api_key}',}
+    request = requests.get(url, headers=headers)
+    reply = request.json()
+    
+    embed = interactions.Embed(
+        title=f"Search Result ",
+        description=f'<@{ctx.user.id}> searched for "{query}"',
+        color=embedcolor("#cba6f7"),
+        thumbnail=interactions.EmbedImageStruct(url=reply['tracks']['items'][0]['album']['images'][0]['url']),
+        fields=[
+            interactions.EmbedField(name=f"Album Title", value=reply['tracks']['items'][0]['album']['name'], inline=False),
+            interactions.EmbedField(name=f"Album Artist", value=reply['tracks']['items'][0]['album']['artists'][0]['name'], inline=False),
+            interactions.EmbedField(name=f"Track URL", value=reply['tracks']['items'][0]['external_urls']['spotify'], inline=False),
+        ]
+    )
+    await ctx.send(embeds=[embed])
+
+
 
 # Launch The Bot
 print("Starting Bot....")
