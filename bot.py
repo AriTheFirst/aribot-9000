@@ -25,13 +25,44 @@ command_scopes = [752667089155915846, 1221655728029302865, 1172683672856567808]
 def embedcolor(hex_code):
     return int(hex_code.lstrip('#'), 16)
 
-# Set up some stuff for MongoDB
+# MongoDB URLs and DB
 dbclient = pymongo.MongoClient("mongodb://10.0.0.21:27017")
 database = dbclient["aribot-currency"]
 
-# Add a somewhat important thingy
+# Function for seperating numbers with commas
 def comma_seperate(number_str):
     return "{:,}".format(int(number_str))
+
+# API Lookups Function
+def api_request(uid,returnfull: bool):
+    url = f"https://discord.com/api/v10/users/{uid}"
+    headers = {"Authorization": f"Bot {TOKEN}"}
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        response_dict = response.json() 
+        username = response_dict['global_name']
+        if username == None:
+            username = response_dict['username']
+        if returnfull == True:
+            return response_dict
+        else:
+            return username
+    else: 
+        return "API Request Failure"
+        print(f"API Request Failed with code {response.status_code}")
+
+# Blurb to send when API Requests Fail
+api_fail_msg = """\
+Discord API Request Failed.
+There could be multiple reasons for this:
+- You pinged a role instead of a user
+- You didn't ping the user but typed their name instead
+- You typed nonsense into the input
+- The Discord API Could be down (unlikely)"""
+
+# ----------------- #
+# Start of Commands #
+# ----------------- #
 
 # API Request Command
 @bot.command(
@@ -48,24 +79,16 @@ def comma_seperate(number_str):
 )
 async def api(ctx: interactions.CommandContext, user: str):
     userchecked = re.sub("[^0-9]", "", f"{user}")
-    url = f"https://discord.com/api/v10/users/{userchecked}"
-    headers = {"Authorization": f"Bot {TOKEN}"}
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        print(f"Request for user {userchecked} successful!")
-        response_dict = response.json() 
-        username = response_dict['global_name']
-        if username == None:
-            username = response_dict['username']
-        json_formatted_str = json.dumps(response_dict, indent=4, sort_keys=True)
+    if api_request(userchecked,False) == "API Request Failure":
+        await ctx.send(api_fail_msg,ephemeral=True)
+    else:
+        json_formatted_str = json.dumps(api_request(userchecked,True), indent=4, sort_keys=True)
         embed = interactions.Embed(
-            title=f"{username}'s API Response",
+            title=f"{api_request(userchecked,False)}'s API Response",
             description=f"```json\n{json_formatted_str}```",
             color=embedcolor("#cba6f7")
         )
         await ctx.send(embeds=[embed])
-    else:
-        await ctx.send("Discord API Request Failed.\nThere could be multiple reasons for this:\n- You pinged a role instead of a user\n- You didn't ping the user but typed their name instead\n- You typed nonsense into the input\n- The Discord API Could be down (unlikely)",ephemeral=True)
 
 # Avatar Command
 @bot.command(
@@ -82,28 +105,17 @@ async def api(ctx: interactions.CommandContext, user: str):
 )
 async def avatar(ctx: interactions.CommandContext, user: str):
     userchecked = re.sub("[^0-9]", "", f"{user}")
-    url = f"https://discord.com/api/v10/users/{userchecked}"
-    headers = {"Authorization": f"Bot {TOKEN}"}
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        print("Request successful!")
-        answer = response.json()
-        avatar_id = answer['avatar']
-        username = answer['global_name']
-        print(f"{avatar_id}")
-        if username == None:
-            username = answer['username']
-        avatar_url = f"https://cdn.discordapp.com/avatars/{userchecked}/{avatar_id}.png?size=128"
+    if api_request(userchecked,True) == "API Request Failure":
+        await ctx.send(api_fail_msg,ephemeral=True)
+    else:
+        avatar_url = f"https://cdn.discordapp.com/avatars/{userchecked}/{api_request(userchecked,True)['avatar']}.png?size=128"
         print(f"Got Avatar URL for User {userchecked}: {avatar_url}")
         embed = interactions.Embed(
-            title=f"{username}'s avatar",
+            title=f"{api_request(userchecked,False)}'s avatar",
             image=interactions.EmbedImageStruct(url=f"{avatar_url}"),
             color=embedcolor("#cba6f7")
         )
         await ctx.send(embeds=[embed])
-    else:
-        print(f"API Request Failed with code {response.status_code}")
-        await ctx.send("Discord API Request Failed.\nThere could be multiple reasons for this:\n- You pinged a role instead of a user\n- You didn't ping the user but typed their name instead\n- You typed nonsense into the input\n- The Discord API Could be down (unlikely)",ephemeral=True)
 
 # Banner Command
 @bot.command(
@@ -120,18 +132,13 @@ async def avatar(ctx: interactions.CommandContext, user: str):
 )
 async def banner(ctx: interactions.CommandContext, user: str):
     userchecked = re.sub("[^0-9]", "", f"{user}")
-    url = f"https://discord.com/api/v10/users/{userchecked}"
-    headers = {"Authorization": f"Bot {TOKEN}"}
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        print("Request successful!")
-        answer = response.json()
-        username = answer['global_name']
-        banner_id = answer['banner']
-        banner_hex = answer['banner_color']
+    if api_request(userchecked,True) == "API Request Failure":
+        await ctx.send(api_fail_msg,ephemeral=True)
+    else:
+        username = api_request(userchecked,True)['global_name']
+        banner_id = api_request(userchecked,True)['banner']
+        banner_hex = api_request(userchecked,True)['banner_color']
         print(f"{banner_id}")
-        if username == None:
-            username = answer['username']
         if banner_id == None:
             print(f"{userchecked} does not have Nitro, Grabbing Hex Code....")
             if banner_hex == None:
@@ -141,7 +148,7 @@ async def banner(ctx: interactions.CommandContext, user: str):
                 print(f"Hex Code {banner_hex} found")
                 hex_no_pound = re.sub('[^A-Za-z0-9]', '', banner_hex)
                 embed = interactions.Embed(
-                    title=f"{username}'s banner",
+                    title=f"{api_request(userchecked,False)}'s banner",
                     footer=interactions.EmbedFooter(text=f"{banner_hex}"),
                     image=interactions.EmbedImageStruct(url=f"https://singlecolorimage.com/get/{hex_no_pound}/600x240"),
                     color=embedcolor("#cba6f7")
@@ -151,14 +158,11 @@ async def banner(ctx: interactions.CommandContext, user: str):
             banner_url = f"https://cdn.discordapp.com/banners/{userchecked}/{banner_id}.png?size=4096"
             print(f"Got Banner URL for User {userchecked}: {banner_url}")
             embed = interactions.Embed(
-                title=f"{username}'s banner",
+                title=f"{api_request(userchecked,False)}'s banner",
                 image=interactions.EmbedImageStruct(url=f"{banner_url}"),
                 color=embedcolor("#cba6f7")
             )
             await ctx.send(embeds=[embed])
-    else:
-        print(f"API Request Failed with code {response.status_code}")
-        await ctx.send("Discord API Request Failed.\nThere could be multiple reasons for this:\n- You pinged a role instead of a user\n- You didn't ping the user but typed their name instead\n- You typed nonsense into the input\n- The Discord API Could be down (unlikely)",ephemeral=True)
 
 # Info Command
 @bot.command(
@@ -267,8 +271,8 @@ async def coinflip(ctx: interactions.CommandContext, bet: str = None, wager: int
         ),
     ],
 )
-async def timezone(ctx: interactions.CommandContext, timezone: str = None):  # Capture the timezone option here
-    if timezone is None:  # Check if timezone is None (default case)
+async def timezone(ctx: interactions.CommandContext, timezone: str = None):
+    if timezone is None:
         time_zones = [
             "America/New_York",
             "America/Chicago",
@@ -575,8 +579,16 @@ async def send(ctx: interactions.CommandContext, user: str = None, amt: int = No
             print(f"{ctx.user.id} sent {amt} coins to {userchecked}. {ctx.user.id} balance = {newbal_sender}, {userchecked} balance = {newbal_reciver}")
             usercol.update_one(query_sender, newbal_sender)
             usercol.update_one(query_reciver, newbal_reciver)
-            await ctx.send(f"<@{ctx.user.id}> sent **{abs(amt)}** Coins to <@{userchecked}>\n<@{ctx.user.id}>'s new balance is **{int(sender_balance)-abs(int(amt))}**\n<@{userchecked}>'s new balance is **{int(reciver_balance)+abs(int(amt))}**")
-
+            embed = interactions.Embed(
+                title=f"Bank Transfer ",
+                description=f"<@{ctx.user.id}> Sent **{amt}** to <@{userchecked}>",
+                color=embedcolor("#cba6f7"),
+                fields=[
+                    interactions.EmbedField(name=f"{api_request(ctx.user.id, False)}'s Balance:", value=f"{comma_seperate(int(sender_balance)-abs(int(amt)))}", inline=True),
+                    interactions.EmbedField(name=f"{api_request(userchecked, False)}'s Balance:", value=f"{comma_seperate(int(reciver_balance)+abs(int(amt)))}", inline=True)
+                ]
+            )
+            await ctx.send(embeds=[embed])
 
 # Launch The Bot
 print("Starting Bot....")
