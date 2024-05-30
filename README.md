@@ -57,6 +57,7 @@
 **Description:** Displays the 4 major US Timezones, and displays a timezone of a User's input if one is submitted
 
 <h2>🕹️🚫 Gamebreakers 🚫🕹️</h2>
+<h3>Aribot's of successful bughunters bughunters</h3>
 <details closed>
 <summary>Simplicursed</summary>
 ⠀ <a href="https://discord.com/users/490112659711328257">Simplicursed</a> has been added as a gamebreaker for discovering that the /coinflip command could be exploited using negative numbers.
@@ -66,4 +67,9 @@
 <details closed>
 <summary>Shegu</summary>
 ⠀ <a href="https://discord.com/users/373905037057064970">Shegu</a> has been added as a gamebreaker for discovering that the /API and /Banner commands would error out when used on most bots.
+</details>
+
+<details closed>
+<summary>Abinbad</summary>
+⠀ <a href="https://discord.com/users/373905037057064970">Abinbad</a> has been added as a gamebreaker for discovering that the /fish command would error out if the user didn't have a bank account setup
 </details>
