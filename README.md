@@ -34,6 +34,15 @@
 **Inputs:** N/A<br>
 **Description:** Lets you fish for things worth different amounts of coins
 
+### /Leaderboard
+**Inputs:** Command Name of Number<br>
+**Description:** Lists all commands and lets you specify one to get more help with
+
+
+### /Leaderboard
+**Inputs:** N/A<br>
+**Description:** Displays the balances of everyone in the server with an open bank account
+
 ### /Ping
 **Inputs:** N/A<br>
 **Description:** Sends a "Pong!"
