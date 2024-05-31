@@ -632,6 +632,30 @@ async def Leaderboard(ctx: interactions.CommandContext):
     )
     await ctx.send(embeds=[embed])
 
+# Help Command
+@bot.command(
+    name = "help",
+    description = "Gives command help",
+    scope=command_scopes,
+    options=[
+        interactions.Option(
+            name="command",
+            description="Command to get help with",
+            required="False",
+            type=interactions.OptionType.STRING
+        )
+    ]
+)
+async def help (ctx: interactions.CommandContext,command: str = None ):
+    embed = interactions.Embed(
+        title="Commands List",
+        color=embedcolor("#cba6f7"),
+        description="**1)** API\n**2)** Avatar\n**3)** Banner\n**4)** Cat\n**5)** Checkbalance\n**6)** Coinflip\n**7)** Fish\n**8)** Leaderboard\n**9)** Ping\n**10)** Identify\n**11)** Info\n**12)** Send\n**13)** Timezone"
+    )
+    await ctx.send(embeds=[embed])
+
+
+
 # Launch The Bot
 print("Starting Bot....")
 print("""   ___       _ ___       __    ___  ___  ___  ___ 
