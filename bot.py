@@ -612,7 +612,25 @@ async def spotify(ctx: interactions.CommandContext, query: str = None):
     )
     await ctx.send(embeds=[embed])
 
-
+# Leaderboard Command
+@bot.command(
+    name="leaderboard",
+    description="Display server leaderboard",
+    scope=command_scopes,
+    )
+async def Leaderboard(ctx: interactions.CommandContext):
+    query = {"name": ""}
+    usercol = database[f"server-{ctx.guild_id}"]
+    cursor = usercol.find({}, {"name": 1, "amt": 1, "_id": 0})
+    documents = list(cursor)
+    sorted_documents = sorted(documents, key=lambda x: int(x['amt']), reverse=True)
+    documents_str = '\n'.join(f"**{i+1}**) <@{doc['name']}> - **{doc['amt']}**" for i, doc in enumerate(sorted_documents))
+    embed = interactions.Embed(
+        title="Leaderboard",
+        color=embedcolor("#cba6f7"),
+        description=f"{documents_str}"
+    )
+    await ctx.send(embeds=[embed])
 
 # Launch The Bot
 print("Starting Bot....")
