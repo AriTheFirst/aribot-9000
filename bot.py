@@ -482,4 +482,3 @@ print("""   ___       _ ___       __    ___  ___  ___  ___
 https://arithefirst.com
 """)
 bot.start()
-
