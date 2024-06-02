@@ -21,8 +21,8 @@ dbclient = pymongo.MongoClient("mongodb://10.0.0.21:27017")
 database = dbclient["aribot-currency"]
 
 def load_fishing(user_id, guild_id):
-    items = ['Old Boot', 'Rock', 'Wallet', 'Oar Fish', 'Funny Stupid Fish', 'Salmon', 'Sea Bunny', 'Wedding Ring', 'Mortimer: The Ancient Evil Goblin That Steals your Coins']
-    probabilities = [20, 20, 15, 15, 10, 10, 5, 2.5, 2.5,]
+    items = ['Old Boot', 'Rock', 'Wallet', 'Oar Fish', 'Funny Stupid Fish', 'Salmon', 'Sea Bunny', 'Wedding Ring', 'Mortimer: The Ancient Evil Goblin That Steals your Coins', 'Monkey']
+    probabilities = [20, 20, 15, 15, 10, 10, 5, 2.5, 2.5, 0.1]
     total_percentage = sum(probabilities)
     normalized_probabilities = [p / total_percentage for p in probabilities]
 
@@ -80,6 +80,9 @@ def load_fishing(user_id, guild_id):
             # Wedding Ring Code
             elif ' '.join(fished_fish) == "Wedding Ring":
                 return fishingrandomizer(150, 350)
+            # Monkey Code
+            elif ' '.join(fished_fish) == "Monkey":
+                return fishingrandomizer(1000, 2000)
             # Goblin Code
             elif ' '.join(fished_fish) == "Mortimer: The Ancient Evil Goblin That Steals your Coins":
                 balance = answer.get("amt")
