@@ -4,6 +4,7 @@ import time
 import random
 import pymongo
 import math
+import interactions
 
 def comma_seperate(number_str):
     return "{:,}".format(int(number_str))
@@ -15,6 +16,10 @@ def vowel_check(item):
         return "an " + f"**{delist}**"
     else:
         return "a " + f"**{delist}**"    
+
+# Function for setting embed colors
+def embedcolor(hex_code):
+    return int(hex_code.lstrip('#'), 16)
 
 # MongoDB URLs and DB
 dbclient = pymongo.MongoClient("mongodb://10.0.0.21:27017")
@@ -55,7 +60,12 @@ def load_fishing(user_id, guild_id):
                 print(f"Current balance for {user_id} is {balance}, fished {int(newbalance)-int(balance)}, new balance is {newbalance}")
                 newvalues = { "$set": { "amt": f"{newbalance}", "lastfished": f"{math.floor(time.time())}" }}
                 usercol.update_one(query, newvalues)
-                return(f'You caught {vowel_check(fished_fish)} worth **{comma_seperate(int(newbalance)-int(balance))}** Coins! Your new balance is **{comma_seperate(newbalance)}**.')
+                embed = interactions.Embed(
+                    title="You Caught Something!",
+                    color=embedcolor("#cba6f7"),
+                    description=f"You caught {vowel_check(fished_fish)} worth **{comma_seperate(int(newbalance)-int(balance))}** Coins! Your new balance is **{comma_seperate(newbalance)}**.",
+                )
+                return [embed]
             # Old Boot Code
             if ' '.join(fished_fish) == "Old Boot":
                 return fishingrandomizer(1,10)

@@ -383,7 +383,7 @@ async def setbalance(ctx: interactions.SlashContext, user: str, amt: int):
     )
 async def fish(ctx: interactions.SlashContext):
     fish_reply = fishing.load_fishing(ctx.user.id, ctx.guild_id)
-    await ctx.send(fish_reply)
+    await ctx.send(embeds=fish_reply)
 
 # Send Command
 @interactions.slash_command(
