@@ -454,9 +454,9 @@ async def send(ctx: interactions.SlashContext, user: str = None, amt: int = None
     scopes=command_scopes,
     )
 async def Leaderboard(ctx: interactions.SlashContext):
-    query = {"name": ""}
+    query = {"name": {"$exists": True}}    
     usercol = database[f"server-{ctx.guild_id}"]
-    cursor = usercol.find({}, {"name": 1, "amt": 1, "_id": 0})
+    cursor = usercol.find(query, {"name": 1, "amt": 1, "_id": 0})
     documents = list(cursor)
     sorted_documents = sorted(documents, key=lambda x: int(x['amt']), reverse=True)
     documents_str = '\n'.join(f"**{i+1}**) <@{doc['name']}> - **{doc['amt']}**" for i, doc in enumerate(sorted_documents))
