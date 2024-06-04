@@ -134,3 +134,4 @@ def load_fishing(user_id, guild_id):
                             color=embedcolor("#cba6f7"),
                             description=f'You caught **Mortimer, The Ancient Evil Goblin That Steals Your Coins**!\nHe took half your coins and now you have **{math.floor(int(balance)/2)}.**'
                         )
+                        return [embed]
