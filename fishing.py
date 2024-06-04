@@ -35,7 +35,12 @@ def load_fishing(user_id, guild_id):
     usercol = database[f"server-{guild_id}"]
     answer = usercol.find_one(query)
     if answer == None:
-        return("You don't have a bank account with us! Please run `/checkbalance`")
+        embed = interactions.Embed(
+            title="You don't have an account!",
+            color=embedcolor("#cba6f7"),
+            description=f"Run `/checkbalance` to create an account.",
+        )
+        return [embed]
     else:
         roundtime = math.floor(time.time())
         lastfished = answer.get("lastfished")
@@ -49,7 +54,12 @@ def load_fishing(user_id, guild_id):
                 return '%d Minutes and %02d Seconds' % (minutes, seconds)
 
         if roundtime - int(lastfished) <= 150:
-            return(f"The /fish command is on cooldown!\nYou have **{convert_ms(150-(math.floor(time.time())-int(lastfished)))}** left.")
+            embed = interactions.Embed(
+                title="You're on Cooldown!",
+                color=embedcolor("#cba6f7"),
+                description=f"You have **{convert_ms(150-(math.floor(time.time())-int(lastfished)))}** until you can fish again.",
+            )
+            return [embed]        
         elif roundtime - int(lastfished) > 150:
             fished_fish = random.SystemRandom().choices(items, weights=normalized_probabilities, k=1)
             # Setup Fishing Logic
