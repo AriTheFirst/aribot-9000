@@ -363,10 +363,19 @@ async def checkbal(ctx: interactions.SlashContext, user: str = None):
     required=False,
     opt_type=interactions.OptionType.INTEGER
 )
-async def setbalance(ctx: interactions.SlashContext, user: str, amt: int):
+@interactions.slash_option(
+    name="goblin",
+    description="Wether or not to set the goblin blance",
+    required=False,
+    opt_type=interactions.OptionType.BOOLEAN
+)
+async def setbalance(ctx: interactions.SlashContext, user: str, amt: int, goblin: bool):
     if ctx.user.id == 613358761901424652:
         userchecked = re.sub("[^0-9]", "", f"{user}")
-        query = {"name": f"{userchecked}"}
+        if goblin == True:
+            query = {"name_nonuser": "mortimer"}
+        else:
+            query = {"name": f"{userchecked}"}
         usercol = database[f"server-{ctx.guild_id}"]
         newvalue = { "$set": { "amt": f"{amt}" }}
         usercol.update_one(query, newvalue)

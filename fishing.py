@@ -31,6 +31,7 @@ def load_fishing(user_id, guild_id):
     total_percentage = sum(probabilities)
     normalized_probabilities = [p / total_percentage for p in probabilities]
 
+    gobquery = {"name_nonuser": "mortimer"}
     query = {"name": str(user_id)}
     usercol = database[f"server-{guild_id}"]
     answer = usercol.find_one(query)
@@ -109,6 +110,15 @@ def load_fishing(user_id, guild_id):
                 if int(balance) <= 1:
                     return(f"You caught the {' '.join(fished_fish)}!\nHe tried to take half your coins, but you were too poor!")
                 else: 
-                    newvalues = { "$set": { "amt": f"{math.floor(int(balance)/2)}", "lastfished": f"{math.floor(time.time())}" }}
-                    usercol.update_one(query, newvalues)
-                    return(f'You caught the **{' '.join(fished_fish)}**!\nHe took half your coins and now you have **{math.floor(int(balance)/2)}**')
+                    gobanswer = usercol.find_one(gobquery)
+                    return(f'You caught **Mortimer, The Ancient Evil Goblin That Steals Your Coins**!\nHe took half your coins and now you have **{math.floor(int(balance)/2)}**')
+                    if gobanswer == None:
+                        inst = usercol.insert_one({ "name_nonuser": "mortimer", "amt": f"{math.floor(int(balance)/2)}",})
+                        newvalues = { "$set": { "amt": f"{math.floor(int(balance)/2)}", "lastfished": f"{math.floor(time.time())}" }}
+                        usercol.update_one(query, newvalues)
+                    else:
+                        gob_balance = gobanswer.get("amt")
+                        goblin_new_values = { "$set": {"amt": f"{int(gob_balance)+(math.floor(int(balance)/2))}",}}
+                        newvalues = { "$set": { "amt": f"{math.floor(int(balance)/2)}", "lastfished": f"{math.floor(time.time())}" }}
+                        usercol.update_one(query, newvalues)
+                        usercol.update_one(gobquery, goblin_new_values)
