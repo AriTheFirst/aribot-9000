@@ -22,7 +22,7 @@ YOUTUBE_TOKEN = os.getenv("YOUTUBE_KEY")
 bot = interactions.Client(token=TOKEN)
 
 # Define Command Scopes
-command_scopes = [752667089155915846, 1221655728029302865, 1172683672856567808]
+command_scopes = [752667089155915846, 1221655728029302865, 1172683672856567808, 1246819071513722900]
 
 # Function for setting embed colors
 def embedcolor(hex_code):
@@ -462,13 +462,158 @@ async def Leaderboard(ctx: interactions.SlashContext):
     description = "Gives command help",
     scopes=command_scopes,
 )
-async def help (ctx: interactions.SlashContext):
-    embed = interactions.Embed(
-        title="Commands List",
-        color=embedcolor("#cba6f7"),
-        description="**1)** API\n**2)** Avatar\n**3)** Banner\n**4)** Cat\n**5)** Checkbalance\n**6)** Coinflip\n**7)** Fish\n**8)** Leaderboard\n**9)** Ping\n**10)** Identify\n**11)** Info\n**12)** Send\n**13)** Timezone"
-    )
-    await ctx.send(embeds=[embed])
+@interactions.slash_option(
+    name="command",
+    description="Specific command to get help with",
+    required=False,
+    opt_type=interactions.OptionType.STRING
+)
+async def help (ctx: interactions.SlashContext, command: str = None):
+    if command == None:
+        commands_list = """\
+        **1)** API
+        **2)** Avatar
+        **3)** Banner
+        **4)** Cat
+        **5)** Checkbalance
+        **6)** Coinflip
+        **7)** Fish
+        **8)** Leaderboard
+        **9)** Ping
+        **10)** Identify
+        **11)** Info
+        **12)** Send
+        **13)** Timezone"""
+
+        embed = interactions.Embed(
+            title="Commands List",
+            color=embedcolor("#cba6f7"),
+            description=commands_list
+        )
+        await ctx.send(embeds=[embed])
+    # /api help
+    elif command.lower() == "api":
+        embed = interactions.Embed(
+            title="API Command",
+            color=embedcolor("#cba6f7"),
+            description="The API command gets data on a certain user from the Discord API.\
+                        This data includes the UID, Username, Avatar ID, Public Flags, Flags\
+                        , Banner ID, Profile Accent Color, Global Name, Avatar Decoration Data\
+                        , Banner Color, and Clan Data.",
+            fields=[interactions.EmbedField(name=f"Inputs:", value="**User** -- The User to get the API Data of (Ping or User ID)", inline=True),]
+        )
+        await ctx.send(embeds=[embed])
+    # /avatar help
+    elif command.lower() == "avatar":
+        embed = interactions.Embed(
+            title="Avatar Command",
+            color=embedcolor("#cba6f7"),
+            description="The Avatar Command gets and displays a specified user's avatar.",
+            fields=[interactions.EmbedField(name=f"Inputs:", value="**User** -- The User to get the avatar of (Ping or User ID)", inline=True),]
+        )
+        await ctx.send(embeds=[embed])
+    # /banner help
+    elif command.lower() == "banner":
+        embed = interactions.Embed(
+            title="Banner Command",
+            color=embedcolor("#cba6f7"),
+            description="The Bannner Command gets and displays a specified user's avatar.",
+            fields=[interactions.EmbedField(name=f"Inputs:", value="**User** -- The User to get the banenr of (Ping or User ID)", inline=True),]
+        )
+        await ctx.send(embeds=[embed])
+        # /cat help
+    elif command.lower() == "cat":
+        embed = interactions.Embed(
+            title="Cat Command",
+            color=embedcolor("#cba6f7"),
+            description="The Cat Command sends a random cat.",
+        )
+        await ctx.send(embeds=[embed])
+
+        # /checkbalance help
+    elif command.lower() == "checkbalance":
+        embed = interactions.Embed(
+            title="Check Balance Command",
+            color=embedcolor("#cba6f7"),
+            description="The Check Balance Command shows you your, or a specified user's, current account\
+                        balance. This command can also be run to initalize an account for a user who does not \
+                        have one.",
+            fields=[interactions.EmbedField(name=f"Inputs:", value="**User (Optional)** -- The User to get the balance of (Ping or User ID)", inline=True),]
+        )
+        await ctx.send(embeds=[embed])
+        # /coinflip help
+    elif command.lower() == "coinflip":
+        embed = interactions.Embed(
+            title="Coinflip Command",
+            color=embedcolor("#cba6f7"),
+            description="The coinflip command will flip a coin. It optionally allows users to bet coins on the output of the coinflip.",
+            fields=[interactions.EmbedField(name=f"Inputs:", value="""\
+                **Wager (Optional)** -- Amount of money to wager on your selected outcome
+                **Bet (Optional)** -- Which coinflip outcome you want to bet on
+                """, inline=True),]
+        )
+        await ctx.send(embeds=[embed])
+        # /fish help
+    elif command.lower() == "fish":
+        embed = interactions.Embed(
+            title="Fish Command",
+            color=embedcolor("#cba6f7"),
+            description="The Fish command lets you go fishing. Fishing can reel in one of many different items that have a wide range value.",
+            )
+        await ctx.send(embeds=[embed])
+        # /leaderboard help
+    elif command.lower() == "leaderboard":
+        embed = interactions.Embed(
+            title="Leaderboard Command",
+            color=embedcolor("#cba6f7"),
+            description="The Leaderboard Command shows the server currency leaderboard, with the person with the most coins on top, and the person with the least on the bottom.",
+            )
+        await ctx.send(embeds=[embed])
+        # /ping help
+    elif command.lower() == "ping":
+        embed = interactions.Embed(
+            title="Ping Command",
+            color=embedcolor("#cba6f7"),
+            description='Sends a "Pong!"',
+            )
+        await ctx.send(embeds=[embed])
+        # /identify help
+    elif command.lower() == "identify":
+        embed = interactions.Embed(
+            title="Identify Command",
+            color=embedcolor("#cba6f7"),
+            description='The Identify Command returns your Discord User ID and the Guild ID of the server you ran the command in.',
+            )
+        await ctx.send(embeds=[embed])
+        # /info help
+    elif command.lower() == "info":
+        embed = interactions.Embed(
+            title="Info Command",
+            color=embedcolor("#cba6f7"),
+            description="The Info Command returns some information about Aribot and it's developer.",
+            )
+        await ctx.send(embeds=[embed])
+        # /send help
+    elif command.lower() == "send":
+        embed = interactions.Embed(
+            title="Send Command",
+            color=embedcolor("#cba6f7"),
+            description="The Send Command allows you to transfer some of your coins to another user.",
+            fields=[interactions.EmbedField(name=f"Inputs:", value="""\
+                **User** -- The User to send your money to (Ping or User ID)
+                **Amt** -- The amount of Money to send
+                """, inline=True),]
+        )
+        await ctx.send(embeds=[embed])
+        # /timezone help
+    elif command.lower() == "timezone":
+        embed = interactions.Embed(
+            title="Timezone Command",
+            color=embedcolor("#cba6f7"),
+            description="The Timezone displays the current time in the 4 Continental US Time zones, or optionally lets you specify another timezone in TZ Database format..",
+            fields=[interactions.EmbedField(name=f"Inputs:", value="**Timezone** -- The optional timezone to get the time of ([TZ Database Format](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones))", inline=True),]
+        )
+        await ctx.send(embeds=[embed])
 
 
 
