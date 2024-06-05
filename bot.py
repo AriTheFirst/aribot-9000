@@ -292,14 +292,18 @@ async def timezone(ctx: interactions.SlashContext, timezone: str = None):
             title="Major US Timezones",
             color=embedcolor("#cba6f7"),
             description=f"{times}",
-            fields=[interactions.EmbedField(name=f"Inputs:", value="**User** -- The User to get the API Data of (Ping or User ID)", inline=True),]
-        )
+            )
         await ctx.send(embeds=[embed])
     else:
         try:
             tz_obj = pytz.timezone(timezone)
             current_time = datetime.now(tz_obj)
-            await ctx.send(f"The time in **{timezone}** is {current_time.strftime('%B %d, %Y %H:%M')}")
+            embed = interactions.Embed(
+                title="User-Specified Timezone",
+                color=embedcolor("#cba6f7"),
+            description=f"The time in **{timezone}** is {current_time.strftime('%B %d, %Y %H:%M')}"
+            )
+            await ctx.send(embeds=[embed])
         except pytz.exceptions.UnknownTimeZoneError:
             await ctx.send("Invalid timezone provided.")
 
