@@ -288,7 +288,13 @@ async def timezone(ctx: interactions.SlashContext, timezone: str = None):
             tz_obj = pytz.timezone(tz)
             current_time = datetime.now(tz_obj)
             times += f"The time in **{tz}** is {current_time.strftime('%B %d, %Y %H:%M')}\n"
-        await ctx.send(times)
+        embed = interactions.Embed(
+            title="Major US Timezones",
+            color=embedcolor("#cba6f7"),
+            description=f"{times}",
+            fields=[interactions.EmbedField(name=f"Inputs:", value="**User** -- The User to get the API Data of (Ping or User ID)", inline=True),]
+        )
+        await ctx.send(embeds=[embed])
     else:
         try:
             tz_obj = pytz.timezone(timezone)
