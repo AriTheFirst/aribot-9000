@@ -221,13 +221,13 @@ async def cat(ctx: interactions.SlashContext):
 @interactions.slash_option(
     name="wager",
     description="Amount of coins to wager",
-    required=True,
+    required=False,
     opt_type=interactions.OptionType.INTEGER
 )
 @interactions.slash_option(
     name="bet",
     description="Heads or Tails",
-    required=True,
+    required=False,
     opt_type=interactions.OptionType.STRING
 )
 async def coinflip(ctx: interactions.SlashContext, bet: str = None, wager: int = None):
@@ -481,7 +481,21 @@ async def Leaderboard(ctx: interactions.SlashContext):
     name="command",
     description="Specific command to get help with",
     required=False,
-    opt_type=interactions.OptionType.STRING
+    opt_type=interactions.OptionType.STRING,
+    choices=[
+        interactions.SlashCommandChoice(name="API", value="API"),
+        interactions.SlashCommandChoice(name="Avatar", value="Avatar"),
+        interactions.SlashCommandChoice(name="Banner", value="Banner"),
+        interactions.SlashCommandChoice(name="Cat", value="Cat"),
+        interactions.SlashCommandChoice(name="Checkbalance", value="Checkbalance"),
+        interactions.SlashCommandChoice(name="Fish", value="Fish"),
+        interactions.SlashCommandChoice(name="Leaderboard", value="Leaderboard"),
+        interactions.SlashCommandChoice(name="Ping", value="Ping"),
+        interactions.SlashCommandChoice(name="Identify", value="Identify"),
+        interactions.SlashCommandChoice(name="Info", value="Info"),
+        interactions.SlashCommandChoice(name="Send", value="Send"),
+        interactions.SlashCommandChoice(name="Timezone", value="Timezone"),
+    ]
 )
 async def help (ctx: interactions.SlashContext, command: str = None):
     if command == None:
