@@ -363,16 +363,10 @@ async def checkbal(ctx: interactions.SlashContext, user: str = None):
     required=False,
     opt_type=interactions.OptionType.INTEGER
 )
-@interactions.slash_option(
-    name="goblin",
-    description="Wether or not to set the goblin blance",
-    required=False,
-    opt_type=interactions.OptionType.BOOLEAN
-)
 async def setbalance(ctx: interactions.SlashContext, user: str, amt: int, goblin: bool = False):
     if ctx.user.id == 613358761901424652:
         userchecked = re.sub("[^0-9]", "", f"{user}")
-        if goblin == True:
+        if user.lower() == "mortimer":
             query = {"name_nonuser": "mortimer"}
             pingname = "Mortimer"
         else:
