@@ -1,4 +1,4 @@
-<p align="center"><img src=images/botpfp.png></p>
+<p align="center"><img src=images/bot/botpfp.png></p>
 <h1 align="center"><b>🤖 Aribot 9000: By <a href="https://arithefirst.com">arithefirst</a> 🤖</b></h1>
 <h4 align="center">Written in python using <a href="https://github.com/interactions-py">interactions.py</a> for The Discord API and <a href="https://www.mongodb.com/">MongoDB</a> for storing data of the currency system</h4>
 
@@ -70,7 +70,7 @@
 <details closed>
 <summary>Simplicursed</summary>
 ⠀ <a href="https://discord.com/users/490112659711328257">Simplicursed</a> has been added as a gamebreaker for discovering that the /coinflip command could be exploited using negative numbers.
-<img src=images/simplicursed.png>
+<img src=images/gamebreakers/simplicursed.png>
 </details>
 
 <details closed>
