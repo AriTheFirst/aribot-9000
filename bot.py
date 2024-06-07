@@ -372,19 +372,29 @@ async def checkbal(ctx: interactions.SlashContext, user: str = None):
                 await ctx.send(f"Your balance is **{formatted_blance}** coins.")
     # Code for when external user is specified
     else: 
-        userchecked = re.sub("[^0-9]", "", f"{user}")
-        query = {"name": str(userchecked)}
-        usercol = database[f"server-{ctx.guild_id}"]
-        answer = usercol.find_one(query)
-        # Check if they have an account
-        if answer == None:
-            # Send an error if they don't
-            await ctx.send(f"@<{userchecked}> dosen't have an account open.")
+        # Checks if the user wants to look for mortimer
+        if user.lower() == "mortimer":
+            query = {"name_nonuser": "mortimer"}
+            usercol = database[f"server-{ctx.guild_id}"]
+            answer = usercol.find_one(query)
+            if answer == None:
+                await ctx.send("No one here has caught Mortimer yet, so his balance is *0* coins.")
+            else:
+                balance = answer.get("amt")
+                await ctx.send(f"Mortimer's balance is **{comma_seperate(balance)}")
         else:
-            # Send user balance if they do
-            balance = answer.get("amt")
-            formatted_blance = comma_seperate(balance)
-            await ctx.send(f"<@{userchecked}>'s balance is **{formatted_blance}** coins.")
+            userchecked = re.sub("[^0-9]", "", f"{user}")
+            query = {"name": str(userchecked)}
+            usercol = database[f"server-{ctx.guild_id}"]
+            answer = usercol.find_one(query)
+            # Check if they have an account
+            if answer == None:
+                # Send an error if they don't
+                await ctx.send(f"@<{userchecked}> dosen't have an account open.")
+            else:
+                # Send user balance if they do
+                balance = answer.get("amt")
+                await ctx.send(f"<@{userchecked}>'s balance is **{comma_seperate(balance)}** coins.")
 
 # Setbalance Command
 @interactions.slash_command(
