@@ -381,7 +381,7 @@ async def checkbal(ctx: interactions.SlashContext, user: str = None):
                 await ctx.send("No one here has caught Mortimer yet, so his balance is *0* coins.")
             else:
                 balance = answer.get("amt")
-                await ctx.send(f"Mortimer's balance is **{comma_seperate(balance)}")
+                await ctx.send(f"Mortimer's balance is **{comma_seperate(balance)}** coins.")
         else:
             userchecked = re.sub("[^0-9]", "", f"{user}")
             query = {"name": str(userchecked)}
