@@ -80,16 +80,20 @@ There could be multiple reasons for this:
     opt_type=interactions.OptionType.STRING
 )
 async def api(ctx: interactions.SlashContext, user: str):
+    # Take the "<@>" out of the user ping
     userchecked = re.sub("[^0-9]", "", f"{user}")
+    # Make sure get request dosen't fail
     if api_request(userchecked,False) == "API Request Failure":
         await ctx.send(api_fail_msg,ephemeral=True)
     else:
+        # Format the API Response
         json_formatted_str = json.dumps(api_request(userchecked,True), indent=4, sort_keys=True)
         embed = interactions.Embed(
             title=f"{api_request(userchecked,False)}'s API Response",
             description=f"```json\n{json_formatted_str}```",
             color=embedcolor("#cba6f7")
         )
+        # Send the API Response
         await ctx.send(embeds=[embed])
 
 # Avatar Command
@@ -105,10 +109,13 @@ async def api(ctx: interactions.SlashContext, user: str):
     opt_type=interactions.OptionType.STRING
 )
 async def avatar(ctx: interactions.SlashContext, user: str):
+    # Take the "<@>" out of the user ping
     userchecked = re.sub("[^0-9]", "", f"{user}")
-    if api_request(userchecked,True) == "API Request Failure":
+    # Make sure get request dosen't fail
+    if api_request(userchecked,False) == "API Request Failure":
         await ctx.send(api_fail_msg,ephemeral=True)
     else:
+        # Extract the avatar url from the API Response
         avatar_url = f"https://cdn.discordapp.com/avatars/{userchecked}/{api_request(userchecked,True)['avatar']}.png?size=128"
         print(f"Got Avatar URL for User {userchecked}: {avatar_url}")
         embed = interactions.Embed(
@@ -116,6 +123,7 @@ async def avatar(ctx: interactions.SlashContext, user: str):
             color=embedcolor("#cba6f7")
         )
         embed.set_image(avatar_url)
+        # Send Embed
         await ctx.send(embeds=[embed])
 
 # Banner Command
@@ -131,7 +139,9 @@ async def avatar(ctx: interactions.SlashContext, user: str):
     opt_type=interactions.OptionType.STRING
 )
 async def banner(ctx: interactions.SlashContext, user: str):
+    # Take the "<@>" out of the user ping
     userchecked = re.sub("[^0-9]", "", f"{user}")
+    # Make sure get request dosen't fail
     if api_request(userchecked,True) == "API Request Failure":
         await ctx.send(api_fail_msg,ephemeral=True)
     else:
@@ -139,12 +149,15 @@ async def banner(ctx: interactions.SlashContext, user: str):
         banner_id = api_request(userchecked,True)['banner']
         banner_hex = api_request(userchecked,True)['banner_color']
         print(f"{banner_id}")
+        # Check if the user has a Nitro Banner
         if banner_id == None:
             print(f"{userchecked} does not have Nitro, Grabbing Hex Code....")
             if banner_hex == None:
+                # Return an error if a user has no banner and no hex code
                 await ctx.send(f"<@{userchecked}> has no banner, nor a banner hex code.")
                 print(f"Could not find banner or hex code for {userchecked}")
             else:
+                # Get color code if user dosen't have a Nitro Banner
                 print(f"Hex Code {banner_hex} found")
                 hex_no_pound = re.sub('[^A-Za-z0-9]', '', banner_hex)
                 embed = interactions.Embed(
@@ -152,9 +165,11 @@ async def banner(ctx: interactions.SlashContext, user: str):
                     footer=interactions.EmbedFooter(text=f"{banner_hex}"),
                     color=embedcolor("#cba6f7")
                 )
+                # Set hex code embed image
                 embed.set_image(f'https://singlecolorimage.com/get/{hex_no_pound}/600x240')
                 await ctx.send(embeds=[embed])
         else:
+            # Set the banner url using the response from the Discord API
             banner_url = f"https://cdn.discordapp.com/banners/{userchecked}/{banner_id}.png?size=4096"
             print(f"Got Banner URL for User {userchecked}: {banner_url}")
             embed = interactions.Embed(
@@ -162,6 +177,7 @@ async def banner(ctx: interactions.SlashContext, user: str):
                 color=embedcolor("#cba6f7")
             )
             embed.set_image(banner_url)
+            # Send Embed
             await ctx.send(embeds=[embed])
 
 # Info Command
@@ -177,7 +193,6 @@ async def info(ctx: interactions.SlashContext):
 @interactions.slash_command(
     name="ping",
     description="Sends Pong",
-    scopes=command_scopes,
 )
 async def ping(ctx: interactions.SlashContext):
     await ctx.send('Pong!')
@@ -186,11 +201,11 @@ async def ping(ctx: interactions.SlashContext):
 @interactions.slash_command(
     name="cat",
     description="Sends a random cat",
-    scopes=command_scopes,
 )
 async def cat(ctx: interactions.SlashContext):
     # Make Request to the Cat API
     url = "https://api.thecatapi.com/v1/images/search?limit=1&has_breeds=1"
+    # Get the API Key from the ENV
     headers = {"x-api-key": CAT_TOKEN}
     response = requests.get(url, headers=headers)
 
@@ -202,11 +217,13 @@ async def cat(ctx: interactions.SlashContext):
         cat_url = answer[0]['url']
         breed_full = answer[0]['breeds']
         breed = breed_full[0]['name']
+        # Add the breed name to the embed
         embed = interactions.Embed(
             title=f"Check out this {breed} cat!",
             color=embedcolor("#cba6f7")
         )
         embed.add_image(cat_url)
+        # Send Embed
         await ctx.send(embeds=[embed])
     else:
         print(f"API Request Failed with code {response.status_code}")
@@ -219,43 +236,47 @@ async def cat(ctx: interactions.SlashContext):
     scopes=command_scopes,
 )
 @interactions.slash_option(
-    name="wager",
-    description="Amount of coins to wager",
-    required=False,
-    opt_type=interactions.OptionType.INTEGER
-)
-@interactions.slash_option(
     name="bet",
     description="Heads or Tails",
     required=False,
     opt_type=interactions.OptionType.STRING
 )
+@interactions.slash_option(
+    name="wager",
+    description="Amount of coins to wager",
+    required=False,
+    opt_type=interactions.OptionType.INTEGER
+)
 async def coinflip(ctx: interactions.SlashContext, bet: str = None, wager: int = None):
     result = random.SystemRandom().randint(0, 1)
+    # Non-betting Coinflip
     if bet is None or wager is None:
         if result == 0:
             await ctx.send("The Coin landed on Heads!")
         else:
             await ctx.send("The Coin landed on Tails!")
+    # Betting Coinflip
     else:
+        # Check if user has bank account
         query = {"name": str(ctx.user.id)}
         usercol = database[f"server-{ctx.guild_id}"]
         answer = usercol.find_one(query)
         if answer == None:
                 await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
         else:
+            # Check if user wagered more than they have
             balance = answer.get("amt")
             if int(balance) < abs(int(wager)):
                 await ctx.send(f"You wagered **{wager}** Coins,which is more than you have in your account.\nPlease try again.")
             else:
-                # Win
+                # Win Condition
                 if bet.lower() == "tails" and result == 1 or bet.lower() == "heads" and result == 0:
                     newbalance = int(balance) + abs(int(wager))
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
                     print(f"Win on {bet.lower()} for {ctx.user.id}: Balance = {newbalance}")
                     usercol.update_one(query, newvalues)
                     await ctx.send(f"You win! **{comma_seperate(abs(int(wager)))}** coins have been added to your account!\nYour new balance is **{comma_seperate(newbalance)}**!")
-                # Lose          
+                # Lose Condition    
                 else:
                     newbalance = int(balance) - abs(int(wager))
                     newvalues = { "$set": { "amt": f"{newbalance}" }}
@@ -275,6 +296,7 @@ async def coinflip(ctx: interactions.SlashContext, bet: str = None, wager: int =
     opt_type=interactions.OptionType.STRING,
     required=False,
 )
+# Im ngl i dont know wtf is going on in here i made this one at like 4AM
 async def timezone(ctx: interactions.SlashContext, timezone: str = None):
     if timezone is None:
         time_zones = [
@@ -314,6 +336,7 @@ async def timezone(ctx: interactions.SlashContext, timezone: str = None):
     scopes=command_scopes,
 )
 async def identify(ctx: interactions.SlashContext):
+    # Get and print UID and Guild ID
     await ctx.send(f'**User ID:** {ctx.user.id}\n**Guild ID:** {ctx.guild_id}')
 
 # Checkbalance Command
@@ -329,28 +352,36 @@ async def identify(ctx: interactions.SlashContext):
     opt_type=interactions.OptionType.STRING
 )
 async def checkbal(ctx: interactions.SlashContext, user: str = None):
+    # Code for if no external user is specified
     if user == None:
             query = {"name": str(ctx.user.id)}
             usercol = database[f"server-{ctx.guild_id}"]
             answer = usercol.find_one(query)
+            # Check for account
             if answer == None:
+                # Make account if user dosen't have one
                 name = str(ctx.user.id)
-                default_values = { "name": f"{name}", "amt": "100", "lastfished": "0"}
+                default_values = { "name": f"{name}", "amt": "100", "lastfished": "0", "rod": "0", "lance": "0", "tmcn": "0",}
                 inst = usercol.insert_one(default_values)
                 print(f"Added Entry {inst.inserted_id}")
                 await ctx.send("You couldn't be found in the database, so I take it this is your first time banking with us.\nHere's 100 Coins for free!")
             else:
+                # Get and send user balane if they have one
                 balance = answer.get("amt")
                 formatted_blance = comma_seperate(balance)
                 await ctx.send(f"Your balance is **{formatted_blance}** coins.")
+    # Code for when external user is specified
     else: 
         userchecked = re.sub("[^0-9]", "", f"{user}")
         query = {"name": str(userchecked)}
         usercol = database[f"server-{ctx.guild_id}"]
         answer = usercol.find_one(query)
+        # Check if they have an account
         if answer == None:
+            # Send an error if they don't
             await ctx.send(f"@<{userchecked}> dosen't have an account open.")
         else:
+            # Send user balance if they do
             balance = answer.get("amt")
             formatted_blance = comma_seperate(balance)
             await ctx.send(f"<@{userchecked}>'s balance is **{formatted_blance}** coins.")
@@ -374,8 +405,11 @@ async def checkbal(ctx: interactions.SlashContext, user: str = None):
     opt_type=interactions.OptionType.INTEGER
 )
 async def setbalance(ctx: interactions.SlashContext, user: str, amt: int, goblin: bool = False):
+    # Check to make sure the user running the command is me (owner of the bot)
     if ctx.user.id == 613358761901424652:
+        # Take the "<@>" out of the user ping
         userchecked = re.sub("[^0-9]", "", f"{user}")
+        # Check if the user is set as mortimer for manually setting his balance
         if user.lower() == "mortimer":
             query = {"name_nonuser": "mortimer"}
             pingname = "Mortimer"
@@ -384,9 +418,11 @@ async def setbalance(ctx: interactions.SlashContext, user: str, amt: int, goblin
             pingname = f"<@{userchecked}>"
         usercol = database[f"server-{ctx.guild_id}"]
         newvalue = { "$set": { "amt": f"{amt}" }}
+        # Write new balance to DB
         usercol.update_one(query, newvalue)
         formatted_balance = "{:,}".format(int(amt))
         await ctx.send(f"{pingname}'s new balance was set to **{formatted_balance}** coins.")
+    # If command runner is not me, send an error message
     else:
         await ctx.send("This command can only be run by <@613358761901424652> herself.")
 
@@ -397,6 +433,7 @@ async def setbalance(ctx: interactions.SlashContext, user: str, amt: int, goblin
     scopes=command_scopes,
     )
 async def fish(ctx: interactions.SlashContext):
+    # Call the load_fishing() funciton from fishing.py
     fish_reply = fishing.load_fishing(ctx.user.id, ctx.guild_id)
     await ctx.send(embeds=fish_reply)
 
@@ -420,11 +457,13 @@ async def fish(ctx: interactions.SlashContext):
 )
 async def send(ctx: interactions.SlashContext, user: str = None, amt: int = None):
     userchecked = re.sub("[^0-9]", "", f"{user}")
+    # Query the sender and reciver balances
     query_reciver = {"name": str(userchecked)}
     query_sender = {"name": str(ctx.user.id)}
     usercol = database[f"server-{ctx.guild_id}"]
     answer_reciver = usercol.find_one(query_reciver)
     answer_sender = usercol.find_one(query_sender)
+    # Check to make sure both users have bank accounts
     if answer_sender == None:
         await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
     elif answer_reciver == None:
@@ -432,9 +471,11 @@ async def send(ctx: interactions.SlashContext, user: str = None, amt: int = None
     else:
         reciver_balance = answer_reciver.get("amt")
         sender_balance = answer_sender.get("amt")
+        # Make sure sender dosen't try to send more than they have
         if int(sender_balance) < abs(amt):
             await ctx.send(f"You tried to send **{abs(amt)}** Coins, which is more than you have in your account.\nPlease try again.")
         else:
+            # Set new balances for sender and reciver
             newbal_reciver = { "$set": { "amt": f"{int(reciver_balance)+abs(int(amt))}" }}
             newbal_sender = { "$set": { "amt": f"{int(sender_balance)-abs(int(amt))}" }}
             print(f"{ctx.user.id} sent {amt} coins to {userchecked}. {ctx.user.id} balance = {newbal_sender}, {userchecked} balance = {newbal_reciver}")
@@ -449,6 +490,7 @@ async def send(ctx: interactions.SlashContext, user: str = None, amt: int = None
                     interactions.EmbedField(name=f"{api_request(userchecked, False)}'s Balance:", value=f"{comma_seperate(int(reciver_balance)+abs(int(amt)))}", inline=True)
                 ]
             )
+            # Send Embed
             await ctx.send(embeds=[embed])
 
 # Leaderboard Command
@@ -458,17 +500,21 @@ async def send(ctx: interactions.SlashContext, user: str = None, amt: int = None
     scopes=command_scopes,
     )
 async def Leaderboard(ctx: interactions.SlashContext):
+    # Look through every document with the "name" property
     query = {"name": {"$exists": True}}    
     usercol = database[f"server-{ctx.guild_id}"]
     cursor = usercol.find(query, {"name": 1, "amt": 1, "_id": 0})
     documents = list(cursor)
+    # Sort Documents
     sorted_documents = sorted(documents, key=lambda x: int(x['amt']), reverse=True)
+    # Add some formatting so it looks pretty
     documents_str = '\n'.join(f"**{i+1}**) <@{doc['name']}> - **{doc['amt']}**" for i, doc in enumerate(sorted_documents))
     embed = interactions.Embed(
         title="Leaderboard",
         color=embedcolor("#cba6f7"),
         description=f"{documents_str}"
     )
+    # Send Embed
     await ctx.send(embeds=[embed])
 
 # Help Command
@@ -483,6 +529,7 @@ async def Leaderboard(ctx: interactions.SlashContext):
     required=False,
     opt_type=interactions.OptionType.STRING,
     choices=[
+        # Set all of the options you can choose from
         interactions.SlashCommandChoice(name="API", value="API"),
         interactions.SlashCommandChoice(name="Avatar", value="Avatar"),
         interactions.SlashCommandChoice(name="Banner", value="Banner"),
@@ -648,6 +695,7 @@ async def help (ctx: interactions.SlashContext, command: str = None):
 
 # Launch The Bot
 print("Starting Bot....")
+# Oooooh look ASCII Art
 print("""   ___       _ ___       __    ___  ___  ___  ___ 
   / _ | ____(_) _ )___  / /_  / _ \\/ _ \\/ _ \\/ _ \\
  / __ |/ __/ / _  / _ \\/ __/  \\_, / // / // / // /
