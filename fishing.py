@@ -64,7 +64,7 @@ def load_fishing(user_id, guild_id):
         elif roundtime - int(lastfished) > 150:
             fished_fish = random.SystemRandom().choices(items, weights=normalized_probabilities, k=1)
             # Setup Fishing Logic
-            def fishingrandomizer(minval: int, maxval: int):
+            def fishingrandomizer(minval: int, maxval: int, imagename: str):
                 value = random.SystemRandom().randint(minval, maxval)
                 balance = answer.get("amt")
                 newbalance = int(balance) + value
@@ -76,34 +76,35 @@ def load_fishing(user_id, guild_id):
                     color=embedcolor("#cba6f7"),
                     description=f"You caught {vowel_check(fished_fish)} worth **{comma_seperate(int(newbalance)-int(balance))}** Coins! Your new balance is **{comma_seperate(newbalance)}**.",
                 )
+                embed.set_thumbnail(url=f"https://raw.githubusercontent.com/arithefirst/aribot-9000/main/images/fishing/{imagename}.png")
                 return [embed]
             # Old Boot Code
             if ' '.join(fished_fish) == "Old Boot":
-                return fishingrandomizer(1,10)
+                return fishingrandomizer(1,10,"boot")
             # Rock Code
             elif ' '.join(fished_fish) == "Rock":
-                return fishingrandomizer(1, 5)
+                return fishingrandomizer(1, 5,"rock")
             # Wallet Code
             elif ' '.join(fished_fish) == "Wallet":
-                return fishingrandomizer(30, 65)
+                return fishingrandomizer(30, 65,"placeholder")
             # Oar Fish Code
             elif ' '.join(fished_fish) == "Oar Fish":
-                return fishingrandomizer(45, 75)
+                return fishingrandomizer(45, 75,"placeholder")
             # Funny Stupid Fish Code
             elif ' '.join(fished_fish) == "Funny Stupid Fish":
-                return fishingrandomizer(60, 85)
+                return fishingrandomizer(60, 85,"placeholder")
             # Salmon Code
             elif ' '.join(fished_fish) == "Salmon":
-                return fishingrandomizer(55, 65)
+                return fishingrandomizer(55, 65,"placeholder")
             # Sea Bunny Code       
             elif ' '.join(fished_fish) == "Sea Bunny":
-                return fishingrandomizer(100, 200)
+                return fishingrandomizer(100, 200,"placeholder")
             # Wedding Ring Code
             elif ' '.join(fished_fish) == "Wedding Ring":
-                return fishingrandomizer(150, 350)
+                return fishingrandomizer(150, 350,"placeholder")
             # Monkey Code
             elif ' '.join(fished_fish) == "Monkey":
-                return fishingrandomizer(1000, 2000)
+                return fishingrandomizer(1000, 2000,"placeholder")
             # Goblin Code
             elif ' '.join(fished_fish) == "Mortimer: The Ancient Evil Goblin That Steals your Coins":
                 balance = answer.get("amt")
@@ -121,6 +122,7 @@ def load_fishing(user_id, guild_id):
                             color=embedcolor("#cba6f7"),
                             description=f'You caught **Mortimer, The Ancient Evil Goblin That Steals Your Coins**!\nHe took half your coins and now you have **{math.floor(int(balance)/2)}.**'
                         )
+                        embed.set_thumbnail(url="https://raw.githubusercontent.com/arithefirst/aribot-9000/main/images/fishing/placeholder.png")
                         return [embed]
                     else:
                         gob_balance = gobanswer.get("amt")
