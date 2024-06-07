@@ -378,7 +378,7 @@ async def checkbal(ctx: interactions.SlashContext, user: str = None):
             usercol = database[f"server-{ctx.guild_id}"]
             answer = usercol.find_one(query)
             if answer == None:
-                await ctx.send("No one here has caught Mortimer yet, so his balance is *0* coins.")
+                await ctx.send("No one here has caught Mortimer yet, so his balance is **0** coins.")
             else:
                 balance = answer.get("amt")
                 await ctx.send(f"Mortimer's balance is **{comma_seperate(balance)}** coins.")
