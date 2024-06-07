@@ -108,32 +108,32 @@ def load_fishing(user_id, guild_id):
             # Goblin Code
             elif ' '.join(fished_fish) == "Mortimer: The Ancient Evil Goblin That Steals your Coins":
                 balance = answer.get("amt")
-                if int(balance) <= 1:
-                    return(f"You caught the {' '.join(fished_fish)}!\nHe tried to take half your coins, but you were too poor!")
-                else: 
-                    gobanswer = usercol.find_one(gobquery)
-                    if gobanswer == None:
-                        inst = usercol.insert_one({ "name_nonuser": "mortimer", "amt": f"{math.floor(int(balance)/2)}",})
-                        newvalues = { "$set": { "amt": f"{math.floor(int(balance)/2)}", "lastfished": f"{math.floor(time.time())}" }}
-                        usercol.update_one(query, newvalues)
-                        print("Mortmier Account Created")
-                        embed = interactions.Embed(
-                            title="You Caught Something!",
-                            color=embedcolor("#cba6f7"),
-                            description=f'You caught **Mortimer, The Ancient Evil Goblin That Steals Your Coins**!\nHe took half your coins and now you have **{math.floor(int(balance)/2)}.**'
-                        )
-                        embed.set_thumbnail(url="https://raw.githubusercontent.com/arithefirst/aribot-9000/main/images/fishing/placeholder.png")
-                        return [embed]
-                    else:
+                lance = answer.get("lance")
+                precheck_gobanswer = usercol.find_one(gobquery)
+                mortimer_image = "placeholder.png"
+                # If Mortimer does not yet have a bank account, create one
+                if precheck_gobanswer == None:
+                    print("Creating Document for Mortimer")
+                    # Create empty Goblin account
+                    inst = usercol.insert_one({ "name_nonuser": "mortimer", "amt": "0",})
+                    print(f"Added Entry {inst.inserted_id}")
+                # Check for Jousting Lance
+                if lance == 0:
+                    if int(balance) <= 1:
+                        return(f"You caught the {' '.join(fished_fish)}!\nHe tried to take half your coins, but you were too poor!")
+                    else: 
+                        gobanswer = usercol.find_one(gobquery)
                         gob_balance = gobanswer.get("amt")
                         goblin_new_values = { "$set": {"amt": f"{int(gob_balance)+(math.floor(int(balance)/2))}",}}
                         newvalues = { "$set": { "amt": f"{math.floor(int(balance)/2)}", "lastfished": f"{math.floor(time.time())}" }}
                         usercol.update_one(query, newvalues)
                         usercol.update_one(gobquery, goblin_new_values)
-                        print(f"Mortimer +{math.floor(int(balance)/2)} Coins")
+                        print(f"Mortimer +{math.floor(int(balance)/2)} Coins (Total Balance {int(gob_balance)+math.floor(int(balance)/2)})")
                         embed = interactions.Embed(
                             title="You Caught Something!",
                             color=embedcolor("#cba6f7"),
                             description=f'You caught **Mortimer, The Ancient Evil Goblin That Steals Your Coins**!\nHe took half your coins and now you have **{math.floor(int(balance)/2)}.**'
                         )
                         return [embed]
+                else:
+                    print("Jousting lance handler here")
