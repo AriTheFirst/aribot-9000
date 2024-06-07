@@ -118,7 +118,7 @@ def load_fishing(user_id, guild_id):
                     inst = usercol.insert_one({ "name_nonuser": "mortimer", "amt": "0",})
                     print(f"Added Entry {inst.inserted_id}")
                 # Check for Jousting Lance
-                if lance == 0:
+                if int(lance) == 0:
                     if int(balance) <= 1:
                         return(f"You caught the {' '.join(fished_fish)}!\nHe tried to take half your coins, but you were too poor!")
                     else: 
@@ -136,4 +136,10 @@ def load_fishing(user_id, guild_id):
                         )
                         return [embed]
                 else:
-                    print("Jousting lance handler here")
+                    # Integrate Jousting Lance
+                    embed = interactions.Embed(
+                            title="You're not supposed to see this!",
+                            color=embedcolor("#cba6f7"),
+                            description='This is part of the Jousting Lance function, but it is currently un-obtainable.\nIf you can see this something is kinda broken ig'
+                        )
+                    return [embed]
