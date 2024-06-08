@@ -95,7 +95,7 @@ def load_fishing(user_id, guild_id):
                 return fishingrandomizer(60, 85,"funny_stupid_fish")
             # Salmon Code
             elif ' '.join(fished_fish) == "Salmon":
-                return fishingrandomizer(55, 65,"placeholder")
+                return fishingrandomizer(55, 65,"salmon")
             # Sea Bunny Code       
             elif ' '.join(fished_fish) == "Sea Bunny":
                 return fishingrandomizer(100, 200,"placeholder")
