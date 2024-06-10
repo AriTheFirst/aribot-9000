@@ -793,7 +793,7 @@ async def help (ctx: interactions.SlashContext, command: str = None):
 # Shop Show Command
 @interactions.slash_command(
     name="shop",
-    scopes=[1221655728029302865],
+    scopes=command_scopes,
     sub_cmd_name="show",
     sub_cmd_description="Show the Shop"
     )
@@ -812,7 +812,7 @@ async def test(ctx: interactions.SlashContext):
     description="Show the Shop",
     sub_cmd_name="more",
     sub_cmd_description="Get more info on an item",
-    scopes=[1221655728029302865]
+    scopes=command_scopes
 )
 @interactions.slash_option(
     name="item",
@@ -869,7 +869,7 @@ and attatches to your fishing rod. Every time you hook a fish, time is sped up b
     description="Purchase an item",
     sub_cmd_name="buy",
     sub_cmd_description="Purchase an item",
-    scopes=[1221655728029302865]
+    scopes=command_scopes
 )
 @interactions.slash_option(
     name="item",
