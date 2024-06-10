@@ -26,15 +26,49 @@ dbclient = pymongo.MongoClient("mongodb://10.0.0.21:27017")
 database = dbclient["aribot-currency"]
 
 def load_fishing(user_id, guild_id):
-    items = ['Old Boot', 'Rock', 'Wallet', 'Oar Fish', 'Funny Stupid Fish', 'Salmon', 'Sea Bunny', 'Wedding Ring', 'Mortimer: The Ancient Evil Goblin That Steals your Coins', 'Monkey']
-    probabilities = [20, 20, 15, 15, 10, 10, 5, 2.4, 2.5, 0.1]
-    total_percentage = sum(probabilities)
-    normalized_probabilities = [p / total_percentage for p in probabilities]
-
     gobquery = {"name_nonuser": "mortimer"}
     query = {"name": str(user_id)}
     usercol = database[f"server-{guild_id}"]
     answer = usercol.find_one(query)
+    lance = answer.get("lance")
+    rod = answer.get("rod")
+
+    if rod == "0":
+        items = [
+            'Old Boot', 
+            'Rock', 
+            'Wallet', 
+            'Oar Fish', 
+            'Funny Stupid Fish', 
+            'Salmon', 
+            'Sea Bunny', 
+            'Wedding Ring', 
+            'Mortimer: The Ancient Evil Goblin That Steals your Coins', 
+            'Monkey'
+            ]
+        probabilities = [20, 20, 15, 15, 10, 10, 5, 2.4, 2.5, 0.1]
+    if rod == "1":
+        items = [
+            'Wallet',
+            'Oar Fish',
+            'Funny Stupid Fish', 
+            'Salmon', 
+            'Sea Bunny', 
+            'Wedding Ring', 
+            'Hammerhead Shark', 
+            'Lemon Shark', 
+            'Tuna', 
+            'Swordfish', 
+            'Pufferfish', 
+            'Mortimer: The Ancient Evil Goblin That Steals your Coins', 
+            'Monkey'
+            ]
+        probabilities = [30,20,15,20,10,7.5,10,10,20,20,20,5,1]
+
+    total_percentage = sum(probabilities)
+    normalized_probabilities = [p / total_percentage for p in probabilities]
+
+    
     if answer == None:
         embed = interactions.Embed(
             title="You don't have an account!",
@@ -105,6 +139,21 @@ def load_fishing(user_id, guild_id):
             # Monkey Code
             elif ' '.join(fished_fish) == "Monkey":
                 return fishingrandomizer(1000, 2000,"placeholder")
+            # Hammerhead Code
+            elif ' '.join(fished_fish) == "Hammerhead Shark":
+                return fishingrandomizer(250, 500,"placeholder")
+            # Lemon Code
+            elif ' '.join(fished_fish) == "Lemon Shark":
+                return fishingrandomizer(270, 550,"placeholder")
+            # Tuna Code
+            elif ' '.join(fished_fish) == "Tuna":
+                return fishingrandomizer(70, 90,"placeholder")
+            # Swordfish Code
+            elif ' '.join(fished_fish) == "Swordfish":
+                return fishingrandomizer(60, 95,"placeholder")
+            # Pufferfish Code
+            elif ' '.join(fished_fish) == "Pufferfish":
+                return fishingrandomizer(78, 107,"placeholder")
             # Goblin Code
             elif ' '.join(fished_fish) == "Mortimer: The Ancient Evil Goblin That Steals your Coins":
                 balance = answer.get("amt")
