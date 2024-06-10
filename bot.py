@@ -930,7 +930,13 @@ async def buy(ctx: interactions.SlashContext, item: int = None):
                 else:
                     newvalue = { "$set": { "tmcn": "1" }}
                     usercol.update_one(query, newvalue)
-            await ctx.send(f"Successfully purchased the {purchase_grammar}\nYour new balance is **{int(balance)-itemcost}**")
+            
+            embed = interactions.Embed(
+                title=f"{purchase_grammar} Purchase Sucessful!",
+                description=f"You spent **{comma_seperate(itemcost)}** Coins\nYou have **{comma_seperate(int(balance)-itemcost)}** Coins left.",
+                color=embedcolor("#CBA6F7")
+            )
+            await ctx.send(embeds=[embed])
             newvalue = { "$set": { "amt": f"{int(balance)-itemcost}" }}
             usercol.update_one(query, newvalue)
 
