@@ -27,7 +27,7 @@ database = dbclient["aribot-currency"]
 
 def load_fishing(user_id, guild_id):
     items = ['Old Boot', 'Rock', 'Wallet', 'Oar Fish', 'Funny Stupid Fish', 'Salmon', 'Sea Bunny', 'Wedding Ring', 'Mortimer: The Ancient Evil Goblin That Steals your Coins', 'Monkey']
-    probabilities = [20, 20, 15, 15, 10, 10, 5, 2.4, 10000000000000000000000000000000000000000000000000, 0.1]
+    probabilities = [20, 20, 15, 15, 10, 10, 5, 2.4, 2.5, 0.1]
     total_percentage = sum(probabilities)
     normalized_probabilities = [p / total_percentage for p in probabilities]
 
@@ -98,7 +98,7 @@ def load_fishing(user_id, guild_id):
                 return fishingrandomizer(55, 65,"salmon")
             # Sea Bunny Code       
             elif ' '.join(fished_fish) == "Sea Bunny":
-                return fishingrandomizer(100, 200,"placeholder")
+                return fishingrandomizer(100, 200,"sea_bunny")
             # Wedding Ring Code
             elif ' '.join(fished_fish) == "Wedding Ring":
                 return fishingrandomizer(150, 350,"placeholder")
