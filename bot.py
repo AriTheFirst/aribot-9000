@@ -445,7 +445,97 @@ async def setbalance(ctx: interactions.SlashContext, user: str, amt: int, goblin
 async def fish(ctx: interactions.SlashContext):
     # Call the load_fishing() funciton from fishing.py
     fish_reply = fishing.load_fishing(ctx.user.id, ctx.guild_id)
-    await ctx.send(embeds=fish_reply)
+    if fish_reply == "lance_true":
+                # Setup the Dropdown
+        select_menu = interactions.StringSelectMenu(
+            "Left", "Right",
+            placeholder="Which way do you stab?",
+            min_values=1,
+            max_values=1,
+            custom_id="duel_selection",
+        )
+
+        # Create Embed
+        embed = interactions.Embed(
+            title="Mortimer Duel",
+            color=embedcolor("#cba6f7"),
+            description=f"""You caught **Mortimer, The Ancient Evil Goblin That Steals Your Coins**! He \
+was about to take your coins, but you challenged him to a duel! He will pick a random direction to jump to \
+avoid your sword. If he jumps to the same direction you stab, you win and take all of his coins! If he \
+jumps the opposite way, you loose, and he takes 25% of your coins!"""
+        )
+        embed.set_thumbnail(url="https://raw.githubusercontent.com/arithefirst/aribot-9000/main/images/fishing/placeholder.png")
+
+        # Send Embed
+        message = await ctx.send(embeds=[embed])
+        dropdown = await ctx.send(components=[select_menu], ephemeral=True)
+        dropdown_id = dropdown.id
+
+        # Query MongoDB
+        gobquery = {"name_nonuser": "mortimer"}
+        query = {"name": str(ctx.user.id)}
+        usercol = database[f"server-{ctx.guild_id}"]
+        gobanswer = usercol.find_one(gobquery)
+        answer = usercol.find_one(query)
+        gobbalance = gobanswer.get("amt")
+        balance = answer.get("amt")
+
+        # Set the check to always return true
+        SelectMenuEvent = None
+        async def check(event: SelectMenuEvent) -> bool:
+            return True
+
+        try:
+            # Wait for the Select Menu interaction
+            used_option: SelectMenuEvent = await bot.wait_for_component(components=select_menu, check=check, timeout=60)
+            print(f"Selected Option: {used_option.ctx.values[0]}")
+
+        except TimeoutError:
+            # Runs on timeout (60s)
+            print("Timed Out!")
+            select_menu.disabled = True
+            await message.edit(components=[select_menu])
+            await ctx.send("Interaction Timed out; 50% of your coins have been taken by default.")
+            # Half user's coins
+            newvalue = { "$set": { "amt": f"{int(balance)/2}" }}
+            usercol.update_one(query, newvalue)
+
+        # Check to see which way user picked
+        if used_option.ctx.values[0] == "Left" and random.SystemRandom().randint(0, 1) == 0 or used_option.ctx.values[0] == "Right" and random.SystemRandom().randint(0, 1) == 1:
+            print("User won")
+            # Set Goblin Balance to 0
+            goblin_new_values = { "$set": {"amt": "0",}}
+            usercol.update_one(gobquery, goblin_new_values)
+            # Set new user balance
+            newvalues = { "$set": { "amt": f"{int(gobbalance)+int(balance)}" }}
+            usercol.update_one(query, newvalues)
+            embed = interactions.Embed(
+                title="Mortimer Duel",
+                color=embedcolor("#cba6f7"),
+                description=f"You won the Duel!\nYou took all of Mortimer's coins, and now you have **{comma_seperate(int(gobbalance)+int(balance))}**"
+            )
+            embed.set_thumbnail(url="https://raw.githubusercontent.com/arithefirst/aribot-9000/main/images/fishing/placeholder.png")
+            # Send new embed and delete dropdown
+            await message.edit(embeds=[embed])
+            await ctx.delete(dropdown_id)
+        else:
+            # Set new goblin balance
+            goblin_new_values = { "$set": {"amt": f"{math.floor(int(gobbalance)+(int(balance)*0.25))}"}}
+            usercol.update_one(gobquery, goblin_new_values)
+            # Set new user balance
+            newvalues = { "$set": { "amt": f"{math.floor(int(balance)*0.75)}" }}
+            usercol.update_one(query, newvalues)
+            embed = interactions.Embed(
+                title="Mortimer Duel",
+                color=embedcolor("#cba6f7"),
+                description=f"You lost the Duel.\nMortimer took 25% of your coins! You now have **{comma_seperate(math.floor(int(balance)*0.75))}** Coins"
+            )
+            embed.set_thumbnail(url="https://raw.githubusercontent.com/arithefirst/aribot-9000/main/images/fishing/placeholder.png")
+            # Send new embed and delete dropdown
+            await message.edit(embed=[embed])
+            await ctx.delete(dropdown_id)
+    else:
+        await ctx.send(embeds=fish_reply)
 
 # Send Command
 @interactions.slash_command(

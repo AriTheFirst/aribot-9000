@@ -27,7 +27,7 @@ database = dbclient["aribot-currency"]
 
 def load_fishing(user_id, guild_id):
     items = ['Old Boot', 'Rock', 'Wallet', 'Oar Fish', 'Funny Stupid Fish', 'Salmon', 'Sea Bunny', 'Wedding Ring', 'Mortimer: The Ancient Evil Goblin That Steals your Coins', 'Monkey']
-    probabilities = [20, 20, 15, 15, 10, 10, 5, 2.5, 2.5, 0.1]
+    probabilities = [20, 20, 15, 15, 10, 10, 5, 2.4, 10000000000000000000000000000000000000000000000000, 0.1]
     total_percentage = sum(probabilities)
     normalized_probabilities = [p / total_percentage for p in probabilities]
 
@@ -118,7 +118,7 @@ def load_fishing(user_id, guild_id):
                     inst = usercol.insert_one({ "name_nonuser": "mortimer", "amt": "0",})
                     print(f"Added Entry {inst.inserted_id}")
                 # Check for Jousting Lance
-                if int(lance) == 0:
+                if lance == "0":
                     if int(balance) <= 1:
                         return(f"You caught the {' '.join(fished_fish)}!\nHe tried to take half your coins, but you were too poor!")
                     else: 
@@ -135,11 +135,6 @@ def load_fishing(user_id, guild_id):
                             description=f'You caught **Mortimer, The Ancient Evil Goblin That Steals Your Coins**!\nHe took half your coins and now you have **{math.floor(int(balance)/2)}.**'
                         )
                         return [embed]
-                else:
+                elif lance == "1":
                     # Integrate Jousting Lance
-                    embed = interactions.Embed(
-                            title="You're not supposed to see this!",
-                            color=embedcolor("#cba6f7"),
-                            description='This is part of the Jousting Lance function, but it is currently un-obtainable.\nIf you can see this something is kinda broken ig'
-                        )
-                    return [embed]
+                    return "lance_true"
