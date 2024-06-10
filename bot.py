@@ -801,7 +801,7 @@ async def test(ctx: interactions.SlashContext):
     embed = interactions.Embed(
         title="Shop Items",
         color=embedcolor("#cba6f7"),
-        description="**Jousting Lance** -- **3,000 Coins\n**Fishing Rod** -- 5,000 Coins\n**Time Machine** -- 10,000 Coins",
+        description="**Jousting Lance** -- **3,000** Coins\n**Fishing Rod** -- **5,000** Coins\n**Time Machine** -- **10,000** Coins",
         footer="Run '/shop more {item}' for more info on an item"
     )
     await ctx.send(embeds=[embed])
@@ -902,61 +902,35 @@ async def buy(ctx: interactions.SlashContext, item: int = None):
     elif item == 3 and int(answer.get("tmcn")) == 1:
         await ctx.send("You already own this item.", ephemeral=True)
     else:
-        # Set costs and Formatted Name Strings
-        if item == 1:
-            purchase_grammar = "**Jousting Lance** for **3,000** Coins"
-            itemcost = 3000
-            if answer == None or int(balance) < itemcost:
-                await component.ctx.send("You do not have enough to purchase this item or you do not have an account open.", ephemeral=True)
-            else:
-                newvalue = { "$set": { "lance": "1" }}
-                usercol.update_one(query, newvalue)
-        elif item == 2:
-            purchase_grammar == "**Fishing Rod** for **5,000** Coins"
-            itemcost = 5000
-            if answer == None or int(balance) < itemcost:
-                await component.ctx.send("You do not have enough to purchase this item or you do not have an account open.", ephemeral=True)
-            else:
-                newvalue = { "$set": { "rod": "1" }}
-                usercol.update_one(query, newvalue)
-        elif item == 3:
-            purchase_grammar == "**Time Machine** for **10,000** Coins"
-            itemcost = 10000
-            if answer == None or int(balance) < itemcost:
-                await component.ctx.send("You do not have enough to purchase this item or you do not have an account open.", ephemeral=True)
-            else:
-                newvalue = { "$set": { "tmcn": "1" }}
-                usercol.update_one(query, newvalue)
-
-        # Configure Embed & Components
-        embed = interactions.Embed(
-            title="Purchase Confirmation",
-            description=f"Please confirm that you would like to purchase {purchase_grammar}",
-            color=embedcolor("#cba6f7"),
-        )
-        confirm = interactions.Button(
-            style=interactions.ButtonStyle.GREEN,
-            label="Confirm Purchase",
-            disabled=False,
-        )
-
-        await ctx.send(embeds=[embed], components=[confirm], ephemeral=True)
-
-        # Define Check
-        async def check(component: Component) -> bool:
-            return True
-
-        # Wait for Buttonpress
-        try:
-            used_component: Component = await bot.wait_for_component(components=confirm, check=check, timeout=30)
-        except TimeoutError:
-            print("Timed Out!")
-            confirm.disabled = True
-            await message.edit(components=button)
+        if answer == None:
+            await ctx.send("You do not have an account open. Run `/checkbalance` to create one.")
         else:
-            # Delete OG Message & Set User Balance
-            await ctx.delete()
-            await used_component.ctx.send(f"Successfully purchased the {purchase_grammar}\nYour new balance is **{int(balance)-itemcost}**")
+            # Set costs and Formatted Name Strings
+            if item == 1:
+                purchase_grammar = "**Jousting Lance** for **3,000** Coins"
+                itemcost = 3000
+                if int(balance) < itemcost:
+                    await ctx.send("You do not have enough to purchase this item.", ephemeral=True)
+                else:
+                    newvalue = { "$set": { "lance": "1" }}
+                    usercol.update_one(query, newvalue)
+            elif item == 2:
+                purchase_grammar == "**Fishing Rod** for **5,000** Coins"
+                itemcost = 5000
+                if int(balance) < itemcost:
+                    await ctx.send("You do not have enough to purchase this item.", ephemeral=True)
+                else:
+                    newvalue = { "$set": { "rod": "1" }}
+                    usercol.update_one(query, newvalue)
+            elif item == 3:
+                purchase_grammar == "**Time Machine** for **10,000** Coins"
+                itemcost = 10000
+                if int(balance) < itemcost:
+                    await ctx.send("You do not have enough to purchase this item.", ephemeral=True)
+                else:
+                    newvalue = { "$set": { "tmcn": "1" }}
+                    usercol.update_one(query, newvalue)
+            await ctx.send(f"Successfully purchased the {purchase_grammar}\nYour new balance is **{int(balance)-itemcost}**")
             newvalue = { "$set": { "amt": f"{int(balance)-itemcost}" }}
             usercol.update_one(query, newvalue)
 
