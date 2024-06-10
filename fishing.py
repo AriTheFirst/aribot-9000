@@ -32,8 +32,9 @@ def load_fishing(user_id, guild_id):
     answer = usercol.find_one(query)
     lance = answer.get("lance")
     rod = answer.get("rod")
+    tmcn = answer.get("tmcn")
 
-    if rod == "0":
+    if rod == '0':
         items = [
             'Old Boot', 
             'Rock', 
@@ -47,7 +48,7 @@ def load_fishing(user_id, guild_id):
             'Monkey'
             ]
         probabilities = [20, 20, 15, 15, 10, 10, 5, 2.4, 2.5, 0.1]
-    if rod == "1":
+    elif rod == '1':
         items = [
             'Wallet',
             'Oar Fish',
@@ -88,14 +89,18 @@ def load_fishing(user_id, guild_id):
             else:
                 return '%d Minutes and %02d Seconds' % (minutes, seconds)
 
-        if roundtime - int(lastfished) <= 150:
+        if roundtime - int(lastfished) <= 150 and tmcn == "0" or roundtime - int(lastfished) <= 30 and tmcn == "1":
+            if tmcn == "0":
+                t_wait = 150
+            elif tmcn == "1":
+                t_wait = 30
             embed = interactions.Embed(
                 title="You're on Cooldown!",
                 color=embedcolor("#cba6f7"),
-                description=f"You have **{convert_ms(150-(math.floor(time.time())-int(lastfished)))}** until you can fish again.",
+                description=f"You have **{convert_ms(t_wait-(math.floor(time.time())-int(lastfished)))}** until you can fish again.",
             )
             return [embed]        
-        elif roundtime - int(lastfished) > 150:
+        elif roundtime - int(lastfished) > 150 and tmcn == "0" or roundtime - int(lastfished) > 30 and tmcn == "1":
             fished_fish = random.SystemRandom().choices(items, weights=normalized_probabilities, k=1)
             # Setup Fishing Logic
             def fishingrandomizer(minval: int, maxval: int, imagename: str):
@@ -183,6 +188,7 @@ def load_fishing(user_id, guild_id):
                             color=embedcolor("#cba6f7"),
                             description=f'You caught **Mortimer, The Ancient Evil Goblin That Steals Your Coins**!\nHe took half your coins and now you have **{math.floor(int(balance)/2)}.**'
                         )
+                        embed.set_thumbnail(url="https://raw.githubusercontent.com/arithefirst/aribot-9000/main/images/fishing/placeholder.png")
                         return [embed]
                 elif lance == "1":
                     # Integrate Jousting Lance
