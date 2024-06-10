@@ -790,7 +790,175 @@ async def help (ctx: interactions.SlashContext, command: str = None):
             fields=[interactions.EmbedField(name=f"Inputs:", value="**Timezone** -- The optional timezone to get the time of ([TZ Database Format](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones))", inline=True),]
         )
         await ctx.send(embeds=[embed])
+# Shop Show Command
+@interactions.slash_command(
+    name="shop",
+    scopes=[1221655728029302865],
+    sub_cmd_name="show",
+    sub_cmd_description="Show the Shop"
+    )
+async def test(ctx: interactions.SlashContext):
+    embed = interactions.Embed(
+        title="Shop Items",
+        color=embedcolor("#cba6f7"),
+        description="**Jousting Lance** -- **3,000 Coins\n**Fishing Rod** -- 5,000 Coins\n**Time Machine** -- 10,000 Coins",
+        footer="Run '/shop more {item}' for more info on an item"
+    )
+    await ctx.send(embeds=[embed])
 
+# Shop More Command
+@interactions.slash_command(
+    name="shop",
+    description="Show the Shop",
+    sub_cmd_name="more",
+    sub_cmd_description="Get more info on an item",
+    scopes=[1221655728029302865]
+)
+@interactions.slash_option(
+    name="item",
+    description="Item to see details of",
+    required=True,
+    opt_type=interactions.OptionType.INTEGER,
+    choices=[
+        interactions.SlashCommandChoice(name="Jousting Lance", value=1),
+        interactions.SlashCommandChoice(name="Fishing Rod", value=2),
+        interactions.SlashCommandChoice(name="Time Machine", value=3)
+    ]
+)
+async def more(ctx: interactions.SlashContext, item: int = None):
+    if item == None:
+        await ctx.send("Please enter a valid item.",ephemeral=true)
+    elif item == 1:
+        embed = interactions.Embed(
+            title="Jousting Lance",
+            color=embedcolor("#cba6f7"),
+            description="""The Jousting Lance costs 3,000 coins, and can be used to fight off \
+Mortimer the Goblin whenever you fish him up. Upon catching \
+Mortimer, you will be presented with a small minigame where you \
+choose to either stab left or stab right. Mortimer will randomly \
+pick an option to try to dodge this attack. If he fails to dodge, \
+you win the fight, and you gain all of the coins that he has taken from \
+everybody in the server. If you loose, he will still take your coins, but only \
+25% of them instead of the normal 50%.""",
+            footer="Run '/shop buy Jousting Lance' to purchase this item"
+        )
+        await ctx.send(embeds=[embed])
+    elif item == 2:
+        embed = interactions.Embed(
+            title="Fishing Rod",
+            color=embedcolor("#cba6f7"),
+            description="""The Fishing Rod costs 5,000, and is made of \
+a special bait-infused titanium. Because of this, this rod prevents you \
+from hooking things like rocks and boots on the line, and lets you catch many new types of fish!""",
+            footer="Run '/shop buy Fishing Rod' to purchase this item"
+        )
+        await ctx.send(embeds=[embed])
+    elif item == 3:
+        embed = interactions.Embed(
+            title="Time Machine",
+            color=embedcolor("#cba6f7"),
+            description="""This revolutionary new piece of fishing technology costs 10,000 coins, \
+and attatches to your fishing rod. Every time you hook a fish, time is sped up by 2 minutes, effectively reducing your cooldown to only 30s.""",
+            footer="Run '/shop buy Time Machine' to purchase this item"
+        )
+        await ctx.send(embeds=[embed])
+
+# Shop Buy Command
+@interactions.slash_command(
+    name="shop",
+    description="Purchase an item",
+    sub_cmd_name="buy",
+    sub_cmd_description="Purchase an item",
+    scopes=[1221655728029302865]
+)
+@interactions.slash_option(
+    name="item",
+    description="Item to purchase",
+    required=True,
+    opt_type=interactions.OptionType.INTEGER,
+    choices=[
+        interactions.SlashCommandChoice(name="Jousting Lance", value=1),
+        interactions.SlashCommandChoice(name="Fishing Rod", value=2),
+        interactions.SlashCommandChoice(name="Time Machine", value=3)
+    ]
+)
+async def buy(ctx: interactions.SlashContext, item: int = None):
+    # Query MongoDB
+    query = {"name": str(ctx.user.id)}
+    usercol = database[f"server-{ctx.guild_id}"]
+    answer = usercol.find_one(query)
+    balance = answer.get("amt")
+    # Make itemcost and purchase_grammar global
+    global purchase_grammar
+    purchase_grammar = None
+    global itemcost
+    itemcost = None
+
+    # Make sure the user dosen't already own the item
+    if item == 1 and int(answer.get("lance")) == 1:
+        await ctx.send("You already own this item.", ephemeral=True)
+    elif item == 2 and int(answer.get("rod")) == 1:
+        await ctx.send("You already own this item.", ephemeral=True)
+    elif item == 3 and int(answer.get("tmcn")) == 1:
+        await ctx.send("You already own this item.", ephemeral=True)
+    else:
+        # Set costs and Formatted Name Strings
+        if item == 1:
+            purchase_grammar = "**Jousting Lance** for **3,000** Coins"
+            itemcost = 3000
+            if answer == None or int(balance) < itemcost:
+                await component.ctx.send("You do not have enough to purchase this item or you do not have an account open.", ephemeral=True)
+            else:
+                newvalue = { "$set": { "lance": "1" }}
+                usercol.update_one(query, newvalue)
+        elif item == 2:
+            purchase_grammar == "**Fishing Rod** for **5,000** Coins"
+            itemcost = 5000
+            if answer == None or int(balance) < itemcost:
+                await component.ctx.send("You do not have enough to purchase this item or you do not have an account open.", ephemeral=True)
+            else:
+                newvalue = { "$set": { "rod": "1" }}
+                usercol.update_one(query, newvalue)
+        elif item == 3:
+            purchase_grammar == "**Time Machine** for **10,000** Coins"
+            itemcost = 10000
+            if answer == None or int(balance) < itemcost:
+                await component.ctx.send("You do not have enough to purchase this item or you do not have an account open.", ephemeral=True)
+            else:
+                newvalue = { "$set": { "tmcn": "1" }}
+                usercol.update_one(query, newvalue)
+
+        # Configure Embed & Components
+        embed = interactions.Embed(
+            title="Purchase Confirmation",
+            description=f"Please confirm that you would like to purchase {purchase_grammar}",
+            color=embedcolor("#cba6f7"),
+        )
+        confirm = interactions.Button(
+            style=interactions.ButtonStyle.GREEN,
+            label="Confirm Purchase",
+            disabled=False,
+        )
+
+        await ctx.send(embeds=[embed], components=[confirm], ephemeral=True)
+
+        # Define Check
+        async def check(component: Component) -> bool:
+            return True
+
+        # Wait for Buttonpress
+        try:
+            used_component: Component = await bot.wait_for_component(components=confirm, check=check, timeout=30)
+        except TimeoutError:
+            print("Timed Out!")
+            confirm.disabled = True
+            await message.edit(components=button)
+        else:
+            # Delete OG Message & Set User Balance
+            await ctx.delete()
+            await used_component.ctx.send(f"Successfully purchased the {purchase_grammar}\nYour new balance is **{int(balance)-itemcost}**")
+            newvalue = { "$set": { "amt": f"{int(balance)-itemcost}" }}
+            usercol.update_one(query, newvalue)
 
 
 # Launch The Bot
