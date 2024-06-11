@@ -887,58 +887,55 @@ async def buy(ctx: interactions.SlashContext, item: int = None):
     query = {"name": str(ctx.user.id)}
     usercol = database[f"server-{ctx.guild_id}"]
     answer = usercol.find_one(query)
-    balance = answer.get("amt")
     # Make itemcost and purchase_grammar global
     global purchase_grammar
     purchase_grammar = None
     global itemcost
     itemcost = None
+    global item_id
+    item_id = None
 
-    # Make sure the user dosen't already own the item
-    if item == 1 and int(answer.get("lance")) == 1:
-        await ctx.send("You already own this item.", ephemeral=True)
-    elif item == 2 and int(answer.get("rod")) == 1:
-        await ctx.send("You already own this item.", ephemeral=True)
-    elif item == 3 and int(answer.get("tmcn")) == 1:
-        await ctx.send("You already own this item.", ephemeral=True)
-    else:
-        if answer == None:
+    # Make sure the user has an account
+    if answer == None:
             await ctx.send("You do not have an account open. Run `/checkbalance` to create one.")
+    else:
+        # Make sure the user dosen't already own the item
+        if item == 1 and int(answer.get("lance")) == 1:
+            await ctx.send("You already own this item.", ephemeral=True)
+        elif item == 2 and int(answer.get("rod")) == 1:
+            await ctx.send("You already own this item.", ephemeral=True)
+        elif item == 3 and int(answer.get("tmcn")) == 1:
+            await ctx.send("You already own this item.", ephemeral=True)
         else:
             # Set costs and Formatted Name Strings
+            # If Lance
             if item == 1:
                 purchase_grammar = "**Jousting Lance** for **3,000** Coins"
                 itemcost = 3000
-                if int(balance) < itemcost:
-                    await ctx.send("You do not have enough to purchase this item.", ephemeral=True)
-                else:
-                    newvalue = { "$set": { "lance": "1" }}
-                    usercol.update_one(query, newvalue)
+                item_id = "lance"
+            # If Rod
             elif item == 2:
                 purchase_grammar == "**Fishing Rod** for **5,000** Coins"
                 itemcost = 5000
-                if int(balance) < itemcost:
-                    await ctx.send("You do not have enough to purchase this item.", ephemeral=True)
-                else:
-                    newvalue = { "$set": { "rod": "1" }}
-                    usercol.update_one(query, newvalue)
+                item_id = "rod"
+            # If Time Machine
             elif item == 3:
                 purchase_grammar == "**Time Machine** for **10,000** Coins"
                 itemcost = 10000
-                if int(balance) < itemcost:
-                    await ctx.send("You do not have enough to purchase this item.", ephemeral=True)
-                else:
-                    newvalue = { "$set": { "tmcn": "1" }}
-                    usercol.update_one(query, newvalue)
-            
-            embed = interactions.Embed(
-                title=f"{purchase_grammar} Purchase Sucessful!",
-                description=f"You spent **{comma_seperate(itemcost)}** Coins\nYou have **{comma_seperate(int(balance)-itemcost)}** Coins left.",
-                color=embedcolor("#CBA6F7")
-            )
-            await ctx.send(embeds=[embed])
-            newvalue = { "$set": { "amt": f"{int(balance)-itemcost}" }}
-            usercol.update_one(query, newvalue)
+                item_id = "tmcn"
+            balance = answer.get("amt")
+            # Check to see if the user has enough
+            if int(balance) < itemcost:
+                await ctx.send("You do not have enough to purchase this item.", ephemeral=True)
+            else:
+                embed = interactions.Embed(
+                    title=f"{purchase_grammar} Purchase Sucessful!",
+                    description=f"You spent **{comma_seperate(itemcost)}** Coins\nYou have **{comma_seperate(int(balance)-itemcost)}** Coins left.",
+                    color=embedcolor("#CBA6F7")
+                )
+                await ctx.send(embeds=[embed])
+                newvalue = { "$set": { "amt": f"{int(balance)-itemcost}", f"{item_id}": "1" }}
+                usercol.update_one(query, newvalue)
 
 
 # Launch The Bot

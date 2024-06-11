@@ -30,9 +30,6 @@ def load_fishing(user_id, guild_id):
     query = {"name": str(user_id)}
     usercol = database[f"server-{guild_id}"]
     answer = usercol.find_one(query)
-    lance = answer.get("lance")
-    rod = answer.get("rod")
-    tmcn = answer.get("tmcn")
 
     if rod == '0':
         items = [
@@ -78,6 +75,12 @@ def load_fishing(user_id, guild_id):
         )
         return [embed]
     else:
+        
+        # Get the values of the 3 Special fishing items
+        lance = answer.get("lance")
+        rod = answer.get("rod")
+        tmcn = answer.get("tmcn")
+
         roundtime = math.floor(time.time())
         lastfished = answer.get("lastfished")
         def convert_ms(total_seconds):
