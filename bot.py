@@ -337,7 +337,10 @@ async def timezone(ctx: interactions.SlashContext, timezone: str = None):
 )
 async def identify(ctx: interactions.SlashContext):
     # Get and print UID and Guild ID
-    await ctx.send(f'**User ID:** {ctx.user.id}\n**Guild ID:** {ctx.guild_id}')
+    embed = interactions.Embed (
+        description=f'**User ID:** {ctx.user.id}\n**Guild ID:** {ctx.guild_id}'
+    )
+    await ctx.send(embeds=embed)
 
 # Checkbalance Command
 @interactions.slash_command(
