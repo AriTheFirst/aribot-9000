@@ -327,7 +327,7 @@ async def timezone(ctx: interactions.SlashContext, timezone: str = None):
             )
             await ctx.send(embeds=[embed])
         except pytz.exceptions.UnknownTimeZoneError:
-            await ctx.send("Invalid timezone provided.")
+            await ctx.send("Invalid timezone provided.\nPlease use [TZ Database Formatting](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)")
 
 # Identify Command
 @interactions.slash_command(
