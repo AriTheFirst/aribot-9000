@@ -338,9 +338,10 @@ async def timezone(ctx: interactions.SlashContext, timezone: str = None):
 async def identify(ctx: interactions.SlashContext):
     # Get and print UID and Guild ID
     embed = interactions.Embed (
-        description=f'**User ID:** {ctx.user.id}\n**Guild ID:** {ctx.guild_id}'
+        description=f'**User ID:** {ctx.user.id}\n**Guild ID:** {ctx.guild_id}',
+        color=embedcolor("#CBA6F7")
     )
-    await ctx.send(embeds=embed)
+    await ctx.send(embeds=[embed])
 
 # Checkbalance Command
 @interactions.slash_command(
@@ -367,12 +368,23 @@ async def checkbal(ctx: interactions.SlashContext, user: str = None):
                 default_values = { "name": f"{name}", "amt": "100", "lastfished": "0", "rod": "0", "lance": "0", "tmcn": "0",}
                 inst = usercol.insert_one(default_values)
                 print(f"Added Entry {inst.inserted_id}")
-                await ctx.send("You couldn't be found in the database, so I take it this is your first time banking with us.\nHere's 100 Coins for free!")
+                await ctx.send("You couldn't be found in the database, so I take it this is your first time banking with us.\nHere's 100 Coins for free!", ephemeral=True)
+                embed = interactions.Embed (
+                    title=f"{api_request(ctx.user.id, False)}'s Balance",
+                    description=f"<@{ctx.user.id}> has **100** coins",
+                    color=embedcolor("#CBA6F7")
+                )
+                await ctx.send(embeds=[embed])
             else:
-                # Get and send user balane if they have one
+                # Get and send user balance if they have one
                 balance = answer.get("amt")
                 formatted_blance = comma_seperate(balance)
-                await ctx.send(f"Your balance is **{formatted_blance}** coins.")
+                embed = interactions.Embed (
+                    title=f"{api_request(ctx.user.id, False)}'s Balance",
+                    description=f"<@{ctx.user.id}> has **{comma_seperate(balance)}** coins",
+                    color=embedcolor("#CBA6F7")
+                )
+                await ctx.send(embeds=[embed])
     # Code for when external user is specified
     else: 
         # Checks if the user wants to look for mortimer
@@ -381,10 +393,20 @@ async def checkbal(ctx: interactions.SlashContext, user: str = None):
             usercol = database[f"server-{ctx.guild_id}"]
             answer = usercol.find_one(query)
             if answer == None:
-                await ctx.send("No one here has caught Mortimer yet, so his balance is **0** coins.")
+                embed = interactions.Embed (
+                    title=f"No account!",
+                    description=f"No one here has caught Mortimer yet, so his balance is **0** coins.",
+                    color=embedcolor("#CBA6F7")
+                )
+                await ctx.send(embeds=[embed])
             else:
                 balance = answer.get("amt")
-                await ctx.send(f"Mortimer's balance is **{comma_seperate(balance)}** coins.")
+                embed = interactions.Embed (
+                    title=f"Mortimer's Balance",
+                    description=f"Mortimer has **{comma_seperate(balance)}** coins",
+                    color=embedcolor("#CBA6F7")
+                )
+                await ctx.send(embeds=[embed])
         else:
             userchecked = re.sub("[^0-9]", "", f"{user}")
             query = {"name": str(userchecked)}
@@ -393,11 +415,21 @@ async def checkbal(ctx: interactions.SlashContext, user: str = None):
             # Check if they have an account
             if answer == None:
                 # Send an error if they don't
-                await ctx.send(f"@<{userchecked}> dosen't have an account open.")
+                embed = interactions.Embed (
+                    title=f"No account!",
+                    description=f"<@{userchecked}> dosen't have an account open.",
+                    color=embedcolor("#CBA6F7")
+                )
+                await ctx.send(embeds=[embed])
             else:
                 # Send user balance if they do
                 balance = answer.get("amt")
-                await ctx.send(f"<@{userchecked}>'s balance is **{comma_seperate(balance)}** coins.")
+                embed = interactions.Embed (
+                    title=f"{api_request(userchecked, False)}'s Balance",
+                    description=f"<@{userchecked}> has **{comma_seperate(balance)}** coins",
+                    color=embedcolor("#CBA6F7")
+                )
+                await ctx.send(embeds=[embed])
 
 # Setbalance Command
 @interactions.slash_command(
@@ -939,7 +971,6 @@ async def buy(ctx: interactions.SlashContext, item: int = None):
                 await ctx.send(embeds=[embed])
                 newvalue = { "$set": { "amt": f"{int(balance)-itemcost}", f"{item_id}": "1" }}
                 usercol.update_one(query, newvalue)
-
 
 # Launch The Bot
 print("Starting Bot....")
