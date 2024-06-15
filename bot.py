@@ -262,12 +262,17 @@ async def coinflip(ctx: interactions.SlashContext, bet: str = None, wager: int =
         usercol = database[f"server-{ctx.guild_id}"]
         answer = usercol.find_one(query)
         if answer == None:
-                await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
+                embed = interactions.Embed (
+                    title=f"No account!",
+                    description=f"You don't have an account open! Run `/checkbalance` to create one.",
+                    color=embedcolor("#CBA6F7")
+                )
+                await ctx.send(embeds=[embed])
         else:
             # Check if user wagered more than they have
             balance = answer.get("amt")
             if int(balance) < abs(int(wager)):
-                await ctx.send(f"You wagered **{wager}** Coins,which is more than you have in your account.\nPlease try again.")
+                await ctx.send(f"You wagered **{wager}** Coins, which is more than you have in your account.\nPlease try again.")
             else:
                 # Win Condition
                 if bet.lower() == "tails" and result == 1 or bet.lower() == "heads" and result == 0:
@@ -600,9 +605,19 @@ async def send(ctx: interactions.SlashContext, user: str = None, amt: int = None
     answer_sender = usercol.find_one(query_sender)
     # Check to make sure both users have bank accounts
     if answer_sender == None:
-        await ctx.send("You don't have a bank account with us! Please run `/checkbalance`")
+        embed = interactions.Embed (
+            title=f"No account!",
+            description=f"You don't have an account open! Run `/checkbalance` to create one.",
+            color=embedcolor("#CBA6F7")
+        )
+        await ctx.send(embeds=[embed])
     elif answer_reciver == None:
-        await ctx.send(f"<@{userchecked}> dosen't have a bank account with us! Tell them to run `/checkbalance`")
+        embed = interactions.Embed (
+            title=f"No account!",
+            description=f"<@{userchecked}> dosen't have an account open! Run `/checkbalance` to create one.",
+            color=embedcolor("#CBA6F7")
+        )
+        await ctx.send(embeds=[embed])
     else:
         reciver_balance = answer_reciver.get("amt")
         sender_balance = answer_sender.get("amt")
@@ -932,7 +947,12 @@ async def buy(ctx: interactions.SlashContext, item: int = None):
 
     # Make sure the user has an account
     if answer == None:
-            await ctx.send("You do not have an account open. Run `/checkbalance` to create one.")
+            embed = interactions.Embed (
+                title=f"No account!",
+                description=f"You don't have an account open! Run `/checkbalance` to create one.",
+                color=embedcolor("#CBA6F7")
+            )
+            await ctx.send(embeds=[embed])
     else:
         # Make sure the user dosen't already own the item
         if item == 1 and int(answer.get("lance")) == 1:
