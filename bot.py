@@ -992,6 +992,93 @@ async def buy(ctx: interactions.SlashContext, item: int = None):
                 newvalue = { "$set": { "amt": f"{int(balance)-itemcost}", f"{item_id}": "1" }}
                 usercol.update_one(query, newvalue)
 
+# Slots Command
+@interactions.slash_command(
+    name="slots",
+    description="Try yout luck at the slots for 150 Coins!",
+    scopes=command_scopes
+)
+async def slots(ctx: interactions.SlashContext): 
+    # Spin Cost
+    spincost = 150
+
+    # Slot Machine Code
+    query = {"name": str(ctx.user.id)}
+    slotquery = {"slotpot": {"$exists": True}}
+    usercol = database[f"server-{ctx.guild_id}"]
+    slot_answer = usercol.find_one(slotquery)
+    answer = usercol.find_one(query)
+
+    # Check to see if user has an open account
+    if answer == None:
+        embed = interactions.Embed (
+        title=f"No account!",
+        description=f"You don't have an account open! Run `/checkbalance` to create one.",
+        color=embedcolor("#CBA6F7")
+    )
+        await ctx.send(embeds=[embed])
+    else:
+        balance = answer.get("amt")
+        if int(balance) < spincost:
+            embed = interactions.Embed (
+                title=f"Not Enough Coins!",
+                description=f"You don't have enough money to run the slots! You have **{balance}** Coins, but it costs **{spincost}** Coins.",
+                color=embedcolor("#CBA6F7")
+            )
+            await ctx.send(embeds=[embed])
+        else:
+            gen_cap = 0
+            global answers_list
+            answers_list = []
+            while gen_cap < 3:
+                answers_list.append(random.SystemRandom().randint(0, 5))
+                gen_cap = gen_cap + 1
+
+            # When you win
+            if answers_list[0] == answers_list[1] and answers_list[0] == answers_list[2]:
+                # If there is no slotpot and the user wins
+                if slot_answer == None:
+                    usercol.update_one(query, { "$set": { "amt": f"{int(balance)+spincost}" }})
+                    embed = interactions.Embed(
+                        title=f"You won!",
+                        description=f"Your spin resulted in {answers_list[0]}{answers_list[1]}{answers_list[2]}, and you earned **{spincost}** Coins!\nYour new balance is **{int(balance)+spincost}** Coins",
+                        color=embedcolor("#CBA6F7")
+                    )
+                    await ctx.send(embeds=[embed])
+                # If the use wins, give them the pot, and set the pot to 0
+                else:
+                    slotpot = slot_answer.get("slotpot")
+                    embed = interactions.Embed(
+                        title=f"You won!",
+                        description=f"Your spin resulted in {answers_list[0]}{answers_list[1]}{answers_list[2]}, and you earned **{slotpot}** Coins!\nYour new balance is **{int(balance)+int(slotpot)}** Coins",
+                        color=embedcolor("#CBA6F7")
+                    )
+                    await ctx.send(embeds=[embed])
+                    usercol.update_one(query, { "$set": { "amt": f"{int(balance)+int(slotpot)}" }})
+                    usercol.update_one(slotquery, { "$set": { "slotpot": "0"}})
+
+            # When you loose
+            else:     
+                if slot_answer == None:
+                    # Create the pot and set it at the spincost
+                    usercol.insert_one({ "slotpot": f"{spincost}"})
+                    embed = interactions.Embed(
+                        title=f"You Lost!",
+                        description=f"Your spin resulted in {answers_list[0]}{answers_list[1]}{answers_list[2]}, and you lost **{spincost}** Coins.\nYour new balance is **{int(balance)-spincost}** Coins",
+                        color=embedcolor("#CBA6F7")
+                    )
+                    await ctx.send(embeds=[embed])
+                else:
+                    slotpot = slot_answer.get("slotpot")
+                    embed = interactions.Embed(
+                        title=f"You Lost!",
+                        description=f"Your spin resulted in {answers_list[0]}{answers_list[1]}{answers_list[2]}, and you lost **{spincost}** Coins.\nYour new balance is **{int(balance)-spincost}** Coins",
+                        color=embedcolor("#CBA6F7")
+                    )
+                    await ctx.send(embeds=[embed])
+                    usercol.update_one(query, { "$set": { "amt": f"{int(balance)-spincost}" }})
+                    usercol.update_one(slotquery, { "$set": { "slotpot": f"{int(slotpot)+spincost}"}})
+
 # Launch The Bot
 print("Starting Bot....")
 # Oooooh look ASCII Art
